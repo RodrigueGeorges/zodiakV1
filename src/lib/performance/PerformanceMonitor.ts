@@ -1,5 +1,3 @@
-import { Analytics } from '../monitoring/Analytics';
-
 export class PerformanceMonitor {
   private static readonly METRICS = {
     FCP: 'first-contentful-paint',

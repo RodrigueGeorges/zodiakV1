@@ -1,6 +1,5 @@
 import React, { Component, ErrorInfo } from 'react';
 import { Logger } from '../logging/Logger';
-import { Analytics } from '../monitoring/Analytics';
 
 interface Props {
   children: React.ReactNode;
@@ -26,11 +25,6 @@ export class ErrorBoundary extends Component<Props, State> {
     // Journaliser l'erreur
     Logger.error('React error boundary caught error', {
       error: error.message,
-      componentStack: errorInfo.componentStack
-    });
-
-    // Tracker l'erreur pour l'analytics
-    Analytics.trackError(error, {
       componentStack: errorInfo.componentStack
     });
   }

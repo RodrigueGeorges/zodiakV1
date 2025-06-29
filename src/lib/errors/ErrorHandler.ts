@@ -1,5 +1,4 @@
 import { Logger } from '../logging/Logger';
-import { Analytics } from '../monitoring/Analytics';
 
 export class ErrorHandler {
   private static isHandlingError = false;
@@ -34,9 +33,6 @@ export class ErrorHandler {
         stack: error.stack,
         ...context
       });
-
-      // Tracker l'erreur pour l'analytics
-      Analytics.trackError(error, context);
 
       // Afficher un message à l'utilisateur si nécessaire
       if (process.env.NODE_ENV === 'production') {

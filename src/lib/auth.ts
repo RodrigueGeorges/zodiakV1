@@ -2,7 +2,6 @@ import { supabase } from './supabase';
 import { StorageService } from './storage';
 import { ErrorMessages } from './errors';
 import { validatePhone, formatPhoneNumberForVonage } from './utils';
-import { Analytics } from '../components/Analytics';
 
 export interface AuthResponse {
   success: boolean;
@@ -39,7 +38,6 @@ export class AuthService {
       }
     } catch (error) {
       console.error('Error initializing auth service:', error);
-      Analytics.trackError(error instanceof Error ? error : new Error('Auth initialization failed'));
     } finally {
       this.initialized = true;
     }

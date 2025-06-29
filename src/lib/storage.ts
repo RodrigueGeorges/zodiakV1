@@ -1,5 +1,4 @@
 import { supabase } from './supabase';
-import { Analytics } from '../components/Analytics';
 import type { Profile, DailyGuidance } from './types/supabase';
 
 export class StorageService {
@@ -51,7 +50,6 @@ export class StorageService {
       return data;
     } catch (error) {
       console.error('Error getting profile:', error);
-      Analytics.trackError(error instanceof Error ? error : new Error('Profile fetch failed'));
       return null;
     }
   }
@@ -70,16 +68,10 @@ export class StorageService {
       const cacheKey = `${this.PROFILE_PREFIX}${profile.id}`;
       this.setInCache(cacheKey, profile);
 
-      Analytics.trackEvent('profile', {
-        action: 'save',
-        userId: profile.id
-      });
-
       console.log('✅ Profil sauvegardé avec succès');
       return true;
     } catch (error) {
       console.error('Error saving profile:', error);
-      Analytics.trackError(error instanceof Error ? error : new Error('Profile save failed'));
       return false;
     }
   }
@@ -113,7 +105,6 @@ export class StorageService {
       return data;
     } catch (error) {
       console.error('Error getting guidance:', error);
-      Analytics.trackError(error instanceof Error ? error : new Error('Guidance fetch failed'));
       return null;
     }
   }
@@ -132,16 +123,10 @@ export class StorageService {
       const cacheKey = `${this.GUIDANCE_PREFIX}${guidance.user_id}_${guidance.date}`;
       this.setInCache(cacheKey, guidance);
 
-      Analytics.trackEvent('guidance', {
-        action: 'save',
-        userId: guidance.user_id
-      });
-
       console.log('✅ Guidance sauvegardée avec succès');
       return true;
     } catch (error) {
       console.error('Error saving guidance:', error);
-      Analytics.trackError(error instanceof Error ? error : new Error('Guidance save failed'));
       return false;
     }
   }

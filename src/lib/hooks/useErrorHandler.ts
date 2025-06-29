@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Analytics } from '../monitoring/Analytics';
 import { toast } from 'react-hot-toast';
 
 interface ErrorInfo {
@@ -57,11 +56,11 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}) {
 
     // Tracker l'erreur si activé
     if (trackAnalytics) {
-      Analytics.trackError(error instanceof Error ? error : new Error(error), {
-        context,
-        retryable: errorInfo.retryable,
-        retryCount
-      });
+      // Analytics.trackError(error instanceof Error ? error : new Error(error), {
+      //   context,
+      //   retryable: errorInfo.retryable,
+      //   retryCount
+      // });
     }
 
     console.error('Error handled:', errorInfo, context);

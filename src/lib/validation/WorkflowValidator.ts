@@ -1,5 +1,4 @@
 import { Logger } from '../logging/Logger';
-import { Analytics } from '../monitoring/Analytics';
 
 interface ValidationStep {
   name: string;
@@ -65,14 +64,9 @@ export class WorkflowValidator {
             workflow: workflowName,
             error: step.errorMessage
           });
-          Analytics.trackError(new Error(`Workflow validation failed: ${step.name}`), {
-            workflow: workflowName,
-            step: step.name
-          });
           break;
         }
 
-        Analytics.trackPerformance(`workflow_step_${workflowName}_${step.name}`, stepDuration);
         Logger.info(`Step validated: ${step.name}`, { duration: stepDuration });
 
       } catch (error) {
@@ -86,11 +80,6 @@ export class WorkflowValidator {
         Logger.error(`Error in validation step: ${step.name}`, {
           workflow: workflowName,
           error
-        });
-        
-        Analytics.trackError(error instanceof Error ? error : new Error('Validation error'), {
-          workflow: workflowName,
-          step: step.name
         });
         
         break;

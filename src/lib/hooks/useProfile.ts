@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { StorageService } from '../storage';
-import { Analytics } from '../monitoring/Analytics';
 import { useCache } from './useCache';
 import type { Profile } from '../types/supabase';
 
@@ -53,9 +52,6 @@ export function useProfile(userId: string | null, options: UseProfileOptions = {
         const userProfile = await StorageService.getProfile(userId);
         const loadTime = performance.now() - startTime;
         
-        Analytics.trackPerformance('profile_load_time', loadTime);
-        Analytics.trackEvent('profile', { action: 'load', userId });
-        
         // Mettre en cache
         if (enableCache && userProfile) {
           cache.set(`profile-${userId}`, userProfile);
@@ -85,7 +81,6 @@ export function useProfile(userId: string | null, options: UseProfileOptions = {
         }
 
         setError(errorMessage);
-        Analytics.trackError(err instanceof Error ? err : new Error(errorMessage));
       } finally {
         setLoading(false);
       }

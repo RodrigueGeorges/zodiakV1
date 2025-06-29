@@ -1,7 +1,6 @@
 import { AuthService } from '../auth';
 import { StorageService } from '../storage';
 import { ErrorMessages } from '../errors';
-import { Analytics } from '../monitoring/Analytics';
 import type { Profile } from '../types/supabase';
 
 interface AuthResponse {
@@ -53,11 +52,6 @@ export class AuthWorkflow {
         throw new Error('Trop de tentatives. Veuillez réessayer plus tard.');
       }
 
-      Analytics.trackEvent('auth', { 
-        action: 'sign_in_attempt',
-        phone 
-      });
-
       const response = await AuthService.signIn(phone);
       
       if (!response.success) {
@@ -69,15 +63,9 @@ export class AuthWorkflow {
       this.resetAttempts();
 
       const profile = await StorageService.getProfile(response.session!.user.id);
-      
-      Analytics.trackEvent('auth', { 
-        action: 'sign_in_success',
-        userId: response.session!.user.id
-      });
 
       return { success: true, profile };
     } catch (error) {
-      Analytics.trackError(error instanceof Error ? error : new Error('Sign in failed'));
       return {
         success: false,
         error: error instanceof Error ? error.message : ErrorMessages.AUTH_ERROR
@@ -90,15 +78,10 @@ export class AuthWorkflow {
       const currentUser = AuthService.getCurrentUser();
       if (currentUser?.id) {
         StorageService.clearUserData(currentUser.id);
-        Analytics.trackEvent('auth', { 
-          action: 'sign_out',
-          userId: currentUser.id
-        });
       }
       await AuthService.signOut();
       this.resetAttempts();
     } catch (error) {
-      Analytics.trackError(error instanceof Error ? error : new Error('Sign out failed'));
       throw error;
     }
   }

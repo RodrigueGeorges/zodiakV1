@@ -2,7 +2,6 @@ import { AstrologyService, type BirthData } from '../astrology';
 import { StorageService } from '../storage';
 import { SMSService } from '../sms';
 import { ErrorMessages } from '../errors';
-import { Analytics } from '../monitoring/Analytics';
 import type { Profile } from '../types/supabase';
 import type { Address } from '../address';
 
@@ -30,14 +29,8 @@ export class RegistrationWorkflow {
       if (!data.birthData.time_of_birth) throw new Error('L\'heure de naissance est requise');
       if (!data.birthPlace) throw new Error('Le lieu de naissance est requis');
 
-      Analytics.trackEvent('registration', {
-        action: 'validate_data',
-        userId: data.userId
-      });
-
       return { valid: true };
     } catch (error) {
-      Analytics.trackError(error instanceof Error ? error : new Error('Data validation failed'));
       return {
         valid: false,
         error: error instanceof Error ? error.message : ErrorMessages.INVALID_BIRTH_DATA
@@ -51,11 +44,6 @@ export class RegistrationWorkflow {
       if (!validation.valid) {
         throw new Error(validation.error);
       }
-
-      Analytics.trackEvent('registration', {
-        action: 'start',
-        userId: data.userId
-      });
 
       // Calculate natal chart
       const natalChart = await AstrologyService.calculateNatalChart(data.birthData);
@@ -110,14 +98,8 @@ ${guidance.summary}`,
       // Clean up temporary data
       StorageService.clearFormData();
 
-      Analytics.trackEvent('registration', {
-        action: 'complete',
-        userId: data.userId
-      });
-
       return { success: true, profile };
     } catch (error) {
-      Analytics.trackError(error instanceof Error ? error : new Error('Registration failed'));
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Erreur lors de l\'inscription'
