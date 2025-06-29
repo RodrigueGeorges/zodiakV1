@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LoadingScreen } from '../components/LoadingScreen';
 import { GuidanceContent } from '../components/GuidanceContent';
-import { Analytics } from '../lib/monitoring/Analytics.js';
+import { Analytics } from '../components/Analytics';
 import { useAuth } from '../lib/hooks/useAuth.tsx';
 
 const pageVariants = {

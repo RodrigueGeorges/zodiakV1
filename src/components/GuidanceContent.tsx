@@ -6,7 +6,7 @@ import { InteractiveCard } from './InteractiveCard';
 import { ProfileTab } from './ProfileTab';
 import { useGuidance } from '../lib/hooks/useGuidance';
 import { LoadingScreen } from './LoadingScreen';
-import { Analytics } from '../lib/monitoring/Analytics.js';
+import { Analytics } from '../components/Analytics';
 import type { Profile, Json } from '../lib/types/supabase';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../lib/hooks/useAuth.tsx';

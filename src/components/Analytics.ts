@@ -1,4 +1,3 @@
-// ATTENTION: NE PAS MODIFIER CE FICHIER
 // Système de monitoring et d'analytics
 
 export type EventType = 
@@ -121,4 +120,4 @@ export class Analytics {
   static clearEvents(): void {
     localStorage.removeItem(this.STORAGE_KEY);
   }
-}
+} 
