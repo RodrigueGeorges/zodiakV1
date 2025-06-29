@@ -13,13 +13,13 @@ export type EventType =
 
 type EventData = Record<string, any>;
 
-export class Analytics {
-  private static readonly STORAGE_KEY = 'analytics_events';
-  private static readonly MAX_EVENTS = 1000;
-  private static readonly BATCH_SIZE = 50;
-  private static readonly SESSION_START = Date.now();
+const Analytics = {
+  STORAGE_KEY: 'analytics_events',
+  MAX_EVENTS: 1000,
+  BATCH_SIZE: 50,
+  SESSION_START: Date.now(),
 
-  private static getEvents(): Array<{
+  getEvents(): Array<{
     type: EventType;
     timestamp: string;
     sessionDuration: number;
@@ -31,9 +31,9 @@ export class Analytics {
     } catch {
       return [];
     }
-  }
+  },
 
-  private static saveEvents(events: Array<{
+  saveEvents(events: Array<{
     type: EventType;
     timestamp: string;
     sessionDuration: number;
@@ -45,9 +45,9 @@ export class Analytics {
     } catch (error) {
       console.error('Error saving events:', error);
     }
-  }
+  },
 
-  static trackEvent(type: EventType, data: EventData = {}): void {
+  trackEvent(type: EventType, data: EventData = {}): void {
     try {
       const events = this.getEvents();
       events.push({
@@ -71,36 +71,36 @@ export class Analytics {
     } catch (error) {
       console.error('Error tracking event:', error);
     }
-  }
+  },
 
-  static trackPageView(page: string): void {
+  trackPageView(page: string): void {
     this.trackEvent('page_view', { page });
-  }
+  },
 
-  static trackAction(action: string, data: EventData = {}): void {
+  trackAction(action: string, data: EventData = {}): void {
     this.trackEvent('action', { action, ...data });
-  }
+  },
 
-  static trackError(error: Error, context: EventData = {}): void {
+  trackError(error: Error, context: EventData = {}): void {
     this.trackEvent('error', {
       message: error.message,
       stack: error.stack,
       ...context
     });
-  }
+  },
 
-  static trackPerformance(metric: string, value: number): void {
+  trackPerformance(metric: string, value: number): void {
     this.trackEvent('performance', { 
       metric, 
       value,
-      memory: performance?.memory ? {
-        usedJSHeapSize: performance.memory.usedJSHeapSize,
-        totalJSHeapSize: performance.memory.totalJSHeapSize
+      memory: (performance as any)?.memory ? {
+        usedJSHeapSize: (performance as any).memory.usedJSHeapSize,
+        totalJSHeapSize: (performance as any).memory.totalJSHeapSize
       } : undefined
     });
-  }
+  },
 
-  private static async sendEvents(): Promise<void> {
+  async sendEvents(): Promise<void> {
     try {
       const events = this.getEvents();
       if (events.length === 0) return;
@@ -111,13 +111,15 @@ export class Analytics {
     } catch (error) {
       console.error('Error sending events:', error);
     }
-  }
+  },
 
-  static getSessionDuration(): number {
+  getSessionDuration(): number {
     return Date.now() - this.SESSION_START;
-  }
+  },
 
-  static clearEvents(): void {
+  clearEvents(): void {
     localStorage.removeItem(this.STORAGE_KEY);
   }
-} 
+};
+
+export default Analytics; 
