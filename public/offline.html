@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zodiak - Hors ligne</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0B1120;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+    }
+    h1 {
+      color: #F5CBA7;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      color: #9CA3AF;
+      line-height: 1.6;
+    }
+    button {
+      background: linear-gradient(to right, #F5CBA7, #D4A373);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      color: #0B1120;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✧ Zodiak ✧</h1>
+    <p>Vous êtes actuellement hors ligne. Veuillez vérifier votre connexion internet et réessayer.</p>
+    <button onclick="window.location.reload()">Réessayer</button>
+  </div>
+</body>
+</html>

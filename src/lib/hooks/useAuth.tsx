@@ -1,0 +1,110 @@
+import React, { useState, useEffect, createContext, useContext } from 'react';
+import { supabase } from '../supabase';
+import { StorageService } from '../storage';
+import type { Profile } from '../types/supabase';
+import type { AuthSession, User } from '@supabase/supabase-js';
+import { useNavigate } from 'react-router-dom';
+
+interface AuthContextType {
+  session: AuthSession | null;
+  user: User | null;
+  profile: Profile | null;
+  isLoading: boolean;
+  signOut: () => Promise<void>;
+  isAuthenticated: boolean;
+  refreshProfile: () => Promise<Profile | null>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [session, setSession] = useState<AuthSession | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const refreshProfile = async () => {
+    if (session?.user) {
+      const userProfile = await StorageService.getProfile(session.user.id, true);
+      setProfile(userProfile);
+      return userProfile;
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    const setData = async (session: AuthSession | null) => {
+      setIsLoading(true);
+      if (session?.user) {
+        const { data, error } = await supabase.auth.getUser();
+        if (error || !data.user) {
+          await supabase.auth.signOut();
+          setSession(null);
+          setUser(null);
+          setProfile(null);
+          setIsLoading(false);
+          return;
+        }
+        setSession(session);
+        setUser(session.user);
+        const userProfile = await StorageService.getProfile(session.user.id);
+        setProfile(userProfile);
+      } else {
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+      }
+      setIsLoading(false);
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setData(session);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setData(session);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESH_FAILED') {
+        // Token invalide ou expiré
+        navigate('/login', { replace: true });
+      }
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    navigate('/', { replace: true });
+  };
+
+  const value = {
+    session,
+    user,
+    profile,
+    isLoading,
+    signOut,
+    isAuthenticated: !!session,
+    refreshProfile,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}; 

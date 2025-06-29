@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+    -webkit-tap-highlight-color: transparent;
+    height: -webkit-fill-available;
+  }
+
+  body {
+    @apply bg-cosmic-900 text-white font-montserrat;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Amélioration des inputs pour mobile */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="date"],
+  input[type="time"] {
+    @apply transition-all duration-300;
+    @apply backdrop-blur-lg bg-white/5;
+    @apply border border-white/10;
+    @apply focus:border-[#F5CBA7] focus:ring-2 focus:ring-[#F5CBA7]/50;
+    @apply placeholder:text-white/30;
+    @apply shadow-lg;
+    @apply appearance-none;
+    @apply text-base sm:text-lg;
+    @apply h-12 sm:h-14;
+    @apply px-4;
+    @apply w-full;
+    font-feature-settings: "tnum" on, "lnum" on;
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Style spécifique pour les inputs numériques */
+  input[type="tel"] {
+    @apply text-center tracking-[0.5em] text-lg sm:text-xl;
+    @apply font-mono;
+    letter-spacing: 0.5em;
+  }
+
+  /* Style des autofill */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: white;
+    -webkit-box-shadow: 0 0 0px 1000px #1a1f2e inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* Safe areas pour iOS */
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@layer utilities {
+  .bg-cosmic-900 {
+    background-color: #0B1120;
+  }
+
+  /* Amélioration du scroll sur mobile */
+  .scroll-smooth {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Désactiver le zoom sur les inputs iOS */
+  .no-zoom {
+    font-size: 16px !important;
+  }
+
+  /* Améliorer la lisibilité du texte */
+  .text-shadow {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+}
+
+header {
+  display: block !important;
+  position: relative !important;
+  z-index: 9999 !important;
+  background: #0B1120 !important;
+}

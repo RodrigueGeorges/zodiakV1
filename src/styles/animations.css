@@ -1,0 +1,44 @@
+@import '../components/constants/theme.ts';
+
+/* Import keyframes from theme constants */
+${Object.values(KEYFRAMES).join('\n')}
+
+/* Animation classes */
+.animate-float {
+  animation: float ${ANIMATIONS.duration.medium} ${ANIMATIONS.timing.smooth} infinite;
+}
+
+.animate-float-delayed {
+  animation: float ${ANIMATIONS.duration.medium} ${ANIMATIONS.timing.smooth} infinite;
+  animation-delay: ${ANIMATIONS.duration.fast};
+}
+
+.animate-float-reverse {
+  animation: float ${ANIMATIONS.duration.medium} ${ANIMATIONS.timing.smooth} infinite reverse;
+}
+
+.animate-float-reverse-delayed {
+  animation: float ${ANIMATIONS.duration.medium} ${ANIMATIONS.timing.smooth} infinite reverse;
+  animation-delay: ${ANIMATIONS.duration.fast};
+}
+
+.animate-glow {
+  animation: glow ${ANIMATIONS.duration.medium} ${ANIMATIONS.timing.smooth} infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow ${ANIMATIONS.duration.slow} linear infinite;
+}
+
+.animate-reverse-spin {
+  animation: reverse-spin ${ANIMATIONS.duration.slow} linear infinite;
+}
+
+.animate-cosmic-pulse {
+  animation: cosmic-pulse ${ANIMATIONS.duration.medium} ${ANIMATIONS.timing.smooth} infinite;
+}
+
+/* Animation delays */
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
