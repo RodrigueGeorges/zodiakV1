@@ -7,7 +7,7 @@
     "dev": "vite",
     "serve:functions": "netlify functions:serve",
     "build": "tsc && vite build",
-    "build:prod": "tsc && vite build --mode production",
+    "build:prod": "npx tsc && vite build --mode production",
     "build:staging": "tsc && vite build --mode staging",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -69,6 +69,5 @@
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
     "vitest": "^1.3.1"
-  },
-  "postinstall": "npm install typescript"
+  }
 }
