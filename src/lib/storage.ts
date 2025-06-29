@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Analytics } from './monitoring/Analytics';
+import { Analytics } from '../components/Analytics';
 import type { Profile, DailyGuidance } from './types/supabase';
 
 export class StorageService {
