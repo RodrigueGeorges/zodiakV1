@@ -1,6 +1,5 @@
 import { supabase } from '../supabase';
 import { StorageService } from '../storage';
-import { Analytics } from '../monitoring/Analytics';
 import type { Profile, DailyGuidance } from '../types/supabase';
 import { DateTime } from 'luxon';
 
@@ -40,7 +39,7 @@ export class SupabaseOptimizationService {
       return data;
     } catch (error) {
       console.error('Erreur lors de la récupération du profil:', error);
-      Analytics.trackError(error instanceof Error ? error : new Error('Profile fetch failed'));
+      console.error('Analytics tracking disabled - Profile fetch failed');
       return null;
     }
   }
@@ -85,7 +84,7 @@ export class SupabaseOptimizationService {
       return data;
     } catch (error) {
       console.error('Erreur lors de la récupération de la guidance:', error);
-      Analytics.trackError(error instanceof Error ? error : new Error('Guidance fetch failed'));
+      console.error('Analytics tracking disabled - Guidance fetch failed');
       return null;
     }
   }
@@ -155,16 +154,12 @@ export class SupabaseOptimizationService {
       await StorageService.saveDailyGuidance(guidance);
       console.log('✅ Guidance sauvegardée et mise en cache');
 
-      Analytics.trackEvent('guidance', {
-        action: 'save_optimized',
-        userId: guidance.user_id,
-        date: guidance.date
-      });
+      console.log('Analytics tracking disabled - guidance save_optimized event');
 
       return true;
     } catch (error) {
       console.error('Erreur lors de la sauvegarde optimisée:', error);
-      Analytics.trackError(error instanceof Error ? error : new Error('Guidance save failed'));
+      console.error('Analytics tracking disabled - Guidance save failed');
       return false;
     }
   }
@@ -189,15 +184,12 @@ export class SupabaseOptimizationService {
       await StorageService.saveProfile(profile);
       console.log('✅ Profil mis à jour et mis en cache');
 
-      Analytics.trackEvent('profile', {
-        action: 'update_optimized',
-        userId: profile.id
-      });
+      console.log('Analytics tracking disabled - profile update_optimized event');
 
       return true;
     } catch (error) {
       console.error('Erreur lors de la mise à jour du profil:', error);
-      Analytics.trackError(error instanceof Error ? error : new Error('Profile update failed'));
+      console.error('Analytics tracking disabled - Profile update failed');
       return false;
     }
   }

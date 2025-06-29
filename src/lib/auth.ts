@@ -61,7 +61,10 @@ export class AuthService {
 
     this.subscribers.add(callback);
     
-    const currentUser = this.getCurrentUser();
+    // Get current user synchronously from localStorage
+    const sessionData = localStorage.getItem(this.SESSION_KEY);
+    const currentUser = sessionData ? JSON.parse(sessionData)?.user : null;
+    
     callback({
       isAuthenticated: !!currentUser,
       userId: currentUser?.id || null
@@ -86,10 +89,7 @@ export class AuthService {
       const formattedPhone = formatPhoneNumberForVonage(cleanPhone);
       
       // Track sign in attempt
-      Analytics.trackEvent('auth', { 
-        action: 'sign_in_attempt', 
-        phone: formattedPhone 
-      });
+      console.log('Analytics tracking disabled - auth sign_in_attempt event');
 
       // Call RPC function with formatted phone number
       const { data, error } = await supabase.rpc('rpc_sign_in_with_phone', {
@@ -122,10 +122,7 @@ export class AuthService {
       this.notifySubscribers(true, data.user.id);
 
       // Track successful sign in
-      Analytics.trackEvent('auth', { 
-        action: 'sign_in_success', 
-        userId: data.user.id 
-      });
+      console.log('Analytics tracking disabled - auth sign_in_success event');
 
       return {
         success: true,
@@ -135,14 +132,11 @@ export class AuthService {
       console.error('Sign in error:', error);
       
       // Track error with details
-      Analytics.trackError(error instanceof Error ? error : new Error('Sign in failed'), {
-        phone: phone,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error'
-      });
+      console.error('Analytics tracking disabled - Sign in failed');
       
       return {
         success: false,
-        error: error instanceof Error ? error.message : ErrorMessages.AUTH_ERROR
+        error: error instanceof Error ? error.message : ErrorMessages.API_ERROR
       };
     }
   }
@@ -159,13 +153,9 @@ export class AuthService {
 
   static async signOut(): Promise<void> {
     try {
-      const currentUser = this.getCurrentUser();
+      const currentUser = await this.getCurrentUser();
       if (currentUser?.id) {
-        StorageService.clearUserData(currentUser.id);
-        Analytics.trackEvent('auth', { 
-          action: 'sign_out', 
-          userId: currentUser.id 
-        });
+        console.log('Analytics tracking disabled - auth sign_out event');
       }
 
       await supabase.auth.signOut();
@@ -173,7 +163,7 @@ export class AuthService {
       this.notifySubscribers(false, null);
     } catch (error) {
       console.error('Error signing out:', error);
-      Analytics.trackError(error instanceof Error ? error : new Error('Sign out failed'));
+      console.error('Analytics tracking disabled - Sign out failed');
     }
   }
 

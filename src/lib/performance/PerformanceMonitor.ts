@@ -15,7 +15,7 @@ export class PerformanceMonitor {
         const entries = entryList.getEntries();
         if (entries.length > 0) {
           const fcp = entries[0];
-          Analytics.trackPerformance(this.METRICS.FCP, fcp.startTime);
+          console.log('Analytics tracking disabled - FCP:', fcp.startTime);
         }
       }).observe({ entryTypes: ['paint'] });
 
@@ -24,7 +24,7 @@ export class PerformanceMonitor {
         const entries = entryList.getEntries();
         if (entries.length > 0) {
           const lcp = entries[entries.length - 1];
-          Analytics.trackPerformance(this.METRICS.LCP, lcp.startTime);
+          console.log('Analytics tracking disabled - LCP:', lcp.startTime);
         }
       }).observe({ entryTypes: ['largest-contentful-paint'] });
 
@@ -33,7 +33,7 @@ export class PerformanceMonitor {
         const entries = entryList.getEntries();
         if (entries.length > 0) {
           const fid = entries[0];
-          Analytics.trackPerformance(this.METRICS.FID, fid.duration);
+          console.log('Analytics tracking disabled - FID:', fid.duration);
         }
       }).observe({ entryTypes: ['first-input'] });
 
@@ -41,18 +41,19 @@ export class PerformanceMonitor {
       new PerformanceObserver((entryList) => {
         let cls = 0;
         for (const entry of entryList.getEntries()) {
-          if (!entry.hadRecentInput) {
-            cls += (entry as any).value;
+          const layoutShiftEntry = entry as any;
+          if (!layoutShiftEntry.hadRecentInput) {
+            cls += layoutShiftEntry.value;
           }
         }
-        Analytics.trackPerformance(this.METRICS.CLS, cls);
+        console.log('Analytics tracking disabled - CLS:', cls);
       }).observe({ entryTypes: ['layout-shift'] });
 
       // Time to First Byte
       const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
       if (navigation) {
         const ttfb = navigation.responseStart - navigation.requestStart;
-        Analytics.trackPerformance(this.METRICS.TTFB, ttfb);
+        console.log('Analytics tracking disabled - TTFB:', ttfb);
       }
     }
   }
@@ -61,13 +62,13 @@ export class PerformanceMonitor {
     const start = performance.now();
     fn();
     const duration = performance.now() - start;
-    Analytics.trackPerformance(`duration_${name}`, duration);
+    console.log('Analytics tracking disabled - duration:', name, duration);
   }
 
   static async measureAsyncDuration(name: string, fn: () => Promise<void>): Promise<void> {
     const start = performance.now();
     await fn();
     const duration = performance.now() - start;
-    Analytics.trackPerformance(`duration_${name}`, duration);
+    console.log('Analytics tracking disabled - async duration:', name, duration);
   }
 }

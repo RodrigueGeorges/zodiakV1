@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Analytics Fix</title>
+</head>
+<body>
+    <h1>Test Analytics Fix</h1>
+    <p>Ouvrez la console du navigateur pour vérifier qu'il n'y a plus d'erreurs d'Analytics.</p>
+    <p>L'erreur "Export 'Analytics' is not defined in module" devrait avoir disparu.</p>
+    
+    <script>
+        // Test simple pour vérifier que l'application se charge
+        console.log('Test Analytics Fix - Page chargée');
+        
+        // Vérifier que l'application se charge sans erreurs
+        fetch('/')
+            .then(response => {
+                console.log('✅ Application accessible:', response.status);
+            })
+            .catch(error => {
+                console.error('❌ Erreur lors du chargement:', error);
+            });
+    </script>
+</body>
+</html> 
