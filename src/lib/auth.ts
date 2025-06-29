@@ -2,7 +2,7 @@ import { supabase } from './supabase';
 import { StorageService } from './storage';
 import { ErrorMessages } from './errors';
 import { validatePhone, formatPhoneNumberForVonage } from './utils';
-import { Analytics } from './monitoring/Analytics';
+import { Analytics } from '../components/Analytics';
 
 export interface AuthResponse {
   success: boolean;
