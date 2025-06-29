@@ -21,8 +21,6 @@ import { useAuth } from './lib/hooks/useAuth.tsx';
 import { BottomNavBar } from './components/BottomNavBar';
 import { Header } from './components/Header';
 import Tabs from './components/Tabs';
-import Analytics from './components/Analytics';
-console.log('Analytics loaded:', Analytics);
 
 // Router component to encapsulate routing logic
 function AppRouter() {

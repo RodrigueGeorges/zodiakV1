@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Briefcase, Battery, Sparkle } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { InteractiveCard } from './InteractiveCard';
 import { ProfileTab } from './ProfileTab';
 import { useGuidance } from '../lib/hooks/useGuidance';
 import { LoadingScreen } from './LoadingScreen';
-import Analytics from '../components/Analytics';
-import type { Profile, Json } from '../lib/types/supabase';
-import { toast } from 'react-hot-toast';
-import { useAuth } from '../lib/hooks/useAuth.tsx';
+import { useAuth } from '../lib/hooks/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FormattedGuidanceText } from './FormattedGuidanceText';
 import { DateTime } from 'luxon';
 import { ShareModal } from './ShareModal';
+import { GuidanceMeter } from './GuidanceMeter';
+import type { Profile, Json } from '../lib/types/supabase';
+import { toast } from 'react-hot-toast';
 
 const getGuidanceText = (field: Json): string => {
   if (typeof field === 'string') {
@@ -78,12 +78,6 @@ export function GuidanceContent({ profile }: GuidanceContentProps) {
   const { guidance, loading, error, generateGuidance, refreshGuidance } = useGuidance();
 
   const today = DateTime.now().toISODate();
-
-  useEffect(() => {
-    if (user?.id) {
-      Analytics.trackPageView('guidance');
-    }
-  }, [user?.id]);
 
   useEffect(() => {
     if (!loading && !guidance && user?.id) {

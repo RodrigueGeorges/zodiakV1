@@ -2,12 +2,14 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
-import App from './App'
-import { ErrorBoundary } from './components/ErrorBoundary'
+import App from './App.tsx'
+import './index.css'
+import { Toaster } from 'react-hot-toast'
+import { ErrorBoundary } from './lib/errors/ErrorBoundary'
+import { PerformanceMonitor } from './lib/performance/PerformanceMonitor'
+import { AuthService } from './lib/auth'
 import { initSentry } from './lib/sentry'
 import { AuthProvider } from './lib/hooks/useAuth'
-import './index.css'
-import Analytics from './components/Analytics'
 
 // Initialiser Sentry
 initSentry()

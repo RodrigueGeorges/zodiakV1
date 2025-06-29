@@ -1,10 +1,9 @@
-import { useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LoadingScreen } from '../components/LoadingScreen';
 import { GuidanceContent } from '../components/GuidanceContent';
-import Analytics from '../components/Analytics';
-import { useAuth } from '../lib/hooks/useAuth.tsx';
+import { useAuth } from '../lib/hooks/useAuth';
 
 const pageVariants = {
   initial: { opacity: 0, y: 20 },
@@ -21,16 +20,6 @@ export function Guidance() {
       navigate('/', { replace: true });
     }
   }, [isLoading, isAuthenticated, navigate]);
-
-  useEffect(() => {
-    if (profile) {
-      Analytics.trackEvent('guidance', {
-        action: 'page_view',
-        userId: profile.id,
-      });
-    }
-  }, [profile]);
-
 
   if (isLoading) {
     return <LoadingScreen message="Chargement de votre guidance..." />;
