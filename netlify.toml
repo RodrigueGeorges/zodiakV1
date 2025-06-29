@@ -10,10 +10,6 @@
 [functions."send-daily-guidance"]
   schedule = "0 8 * * *"
 
-[build.environment]
-  NODE_VERSION = "20"
-  NPM_FLAGS = "--no-audit --no-fund"
-
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
@@ -67,11 +63,3 @@
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
     X-Content-Type-Options = "nosniff"
-
-[context.production.environment]
-  NODE_ENV = "production"
-  SENTRY_DSN = ""
-
-[context.staging.environment]
-  NODE_ENV = "staging"
-  SENTRY_DSN = ""
