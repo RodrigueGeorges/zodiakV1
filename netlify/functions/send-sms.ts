@@ -36,7 +36,7 @@ export const handler: Handler = async (event) => {
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message || 'Erreur lors de l'envoi du SMS');
+      throw new Error(result.message || "Erreur lors de l'envoi du SMS");
     }
 
     return {

@@ -12,7 +12,7 @@ export class OpenAIService {
   private static readonly CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
   private static readonly CACHE = new Map<string, any>();
   private static readonly config: OpenAIConfig = {
-    apiKey: (import.meta.env.VITE_OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY) as string,
+    apiKey: process.env.OPENAI_API_KEY as string,
     model: 'gpt-4',
     maxTokens: 1000
   };
