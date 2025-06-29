@@ -7,7 +7,7 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { initSentry } from './lib/sentry'
 import { AuthProvider } from './lib/hooks/useAuth'
 import './index.css'
-import { Analytics } from './components/Analytics'
+import Analytics from './components/Analytics'
 
 // Initialiser Sentry
 initSentry()
