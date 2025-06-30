@@ -3,7 +3,7 @@ import { Phone, Loader2 } from 'lucide-react';
 import { BrevoService } from '../lib/services/BrevoService';
 import { cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
-import { AnimatedButtonZ } from './AnimatedButtonZ';
+import { MagicButtonX } from './MagicButtonX';
 
 interface PhoneAuthProps {
   onSuccess?: (userId: string) => void;
@@ -116,7 +116,7 @@ export const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function P
             />
           </div>
 
-          <AnimatedButtonZ
+          <MagicButtonX
             onClick={handleSendCode}
             disabled={isLoading || !phoneNumber}
             className={cn(
@@ -141,7 +141,7 @@ export const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function P
                 Envoyer le code
               </>
             )}
-          </AnimatedButtonZ>
+          </MagicButtonX>
         </div>
       ) : (
         <div className="space-y-4">
@@ -164,7 +164,7 @@ export const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function P
             />
           </div>
 
-          <AnimatedButtonZ
+          <MagicButtonX
             onClick={handleVerifyCode}
             disabled={isLoading || !verificationCode}
             className={cn(
@@ -186,7 +186,7 @@ export const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function P
             ) : (
               'Vérifier le code'
             )}
-          </AnimatedButtonZ>
+          </MagicButtonX>
 
           <button
             onClick={() => setIsCodeSent(false)}

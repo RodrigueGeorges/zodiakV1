@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion';
 import { ButtonHTMLAttributes, forwardRef } from 'react';
 
-export interface AnimatedButtonZProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface MagicButtonXProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   className?: string;
 }
 
-export const AnimatedButtonZ = forwardRef<HTMLButtonElement, AnimatedButtonZProps>(
-  function AnimatedButtonZ({ children, className = '', ...props }, ref) {
+export const MagicButtonX = forwardRef<HTMLButtonElement, MagicButtonXProps>(
+  function MagicButtonX({ children, className = '', ...props }, ref) {
     return (
       <motion.button
         ref={ref}

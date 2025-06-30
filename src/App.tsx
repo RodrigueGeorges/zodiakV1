@@ -21,6 +21,8 @@ import { useAuth } from './lib/hooks/useAuth.tsx';
 import { BottomNavBar } from './components/BottomNavBar';
 import { Header } from './components/Header';
 import Tabs from './components/Tabs';
+import { MagicButtonX } from './components/MagicButtonX';
+console.log('MagicButtonX loaded:', MagicButtonX);
 
 // Router component to encapsulate routing logic
 function AppRouter() {
