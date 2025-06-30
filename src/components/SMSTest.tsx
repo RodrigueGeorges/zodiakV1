@@ -3,7 +3,7 @@ import { Send, AlertCircle, Loader2 } from 'lucide-react';
 import { SMSService } from '../lib/sms';
 import { cn } from '../lib/utils';
 import { DeliveryStatus } from './DeliveryStatus';
-import { MagicButtonX } from './MagicButtonX';
+import { ButtonZodiak } from './ButtonZodiak';
 
 export function SMSTest() {
   const [sending, setSending] = useState(false);
@@ -74,7 +74,7 @@ export function SMSTest() {
           </p>
         </div>
 
-        <MagicButtonX
+        <ButtonZodiak
           onClick={handleTestSMS}
           disabled={sending || !phone}
           className={cn(
@@ -99,7 +99,7 @@ export function SMSTest() {
               Envoyer un SMS de test
             </>
           )}
-        </MagicButtonX>
+        </ButtonZodiak>
 
         {result && (
           <div className={cn(

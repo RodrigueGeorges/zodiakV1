@@ -13,10 +13,75 @@ import { BrevoService } from './lib/services/BrevoService';
 import { ApiService } from './lib/api';
 import { PerformanceMonitor } from './lib/performance/PerformanceMonitor';
 import { Logger } from './lib/logging/Logger';
-import { MagicButtonX } from './components/MagicButtonX';
-if (typeof window !== 'undefined') {
-  window.__testMagicButton = MagicButtonX;
+import { ButtonZodiak } from './components/ButtonZodiak';
+import { PhoneAuth } from './components/PhoneAuth';
+import { SMSTest } from './components/SMSTest';
+import { LoginButton } from './components/LoginButton';
+import { GuidanceContent } from './components/GuidanceContent';
+import { BottomNavBar } from './components/BottomNavBar';
+import { Header } from './components/Header';
+import { NatalChartTab } from './components/NatalChartTab';
+import { InteractiveCard } from './components/InteractiveCard';
+import { Toast } from './components/Toast';
+import Tabs from './components/Tabs';
+import { ProfileTab } from './components/ProfileTab';
+import { ShareModal } from './components/ShareModal';
+import { NatalChartSVG } from './components/NatalChartSVG';
+import { FormattedGuidanceText } from './components/FormattedGuidanceText';
+import { PlaceAutocomplete } from './components/PlaceAutocomplete';
+import { UserListTest } from './components/UserListTest';
+import { PlaceSearchTest } from './components/PlaceSearchTest';
+import { PerformanceMonitor as PerformanceMonitorComponent } from './components/PerformanceMonitor';
+import { Logo } from './components/Logo';
+import { NatalSignature } from './components/NatalSignature';
+import { GuidanceMeter } from './components/GuidanceMeter';
+import { CosmicPageTransition } from './components/CosmicPageTransition';
+import { LoadingScreen } from './components/LoadingScreen';
+import { AstrologyTest } from './components/AstrologyTest';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { AddressAutocomplete } from './components/AddressAutocomplete';
+import { DeliveryStatus } from './components/DeliveryStatus';
+import { InboundMessages } from './components/InboundMessages';
+import { PageTransition } from './components/PageTransition';
+import { StarryBackground } from './components/StarryBackground';
+import { StripeSubscription } from './components/StripeSubscription';
+
+// Extend Window interface for test properties
+declare global {
+  interface Window {
+    __testButtonZodiak: any;
+    __testAstrologyService: any;
+    __testGuidanceService: any;
+    __testOpenAIService: any;
+    __testSMSService: any;
+    __testStorageService: any;
+    __testAuthService: any;
+    __testSupabaseService: any;
+    __testTrialService: any;
+    __testBrevoService: any;
+    __testApiService: any;
+    __testPerformanceMonitor: any;
+    __testLogger: any;
+  }
 }
+
+// Force inclusion of all services and components in the bundle
+if (typeof window !== 'undefined') {
+  window.__testButtonZodiak = ButtonZodiak;
+  window.__testAstrologyService = AstrologyService;
+  window.__testGuidanceService = GuidanceService;
+  window.__testOpenAIService = OpenAIService;
+  window.__testSMSService = SMSService;
+  window.__testStorageService = StorageService;
+  window.__testAuthService = SuperAuthService;
+  window.__testSupabaseService = SupabaseOptimizationService;
+  window.__testTrialService = TrialExpiryService;
+  window.__testBrevoService = BrevoService;
+  window.__testApiService = ApiService;
+  window.__testPerformanceMonitor = PerformanceMonitor;
+  window.__testLogger = Logger;
+}
+
 console.log('AstrologyService loaded:', AstrologyService);
 console.log('GuidanceService loaded:', GuidanceService);
 console.log('OpenAIService loaded:', OpenAIService);
@@ -29,6 +94,7 @@ console.log('BrevoService loaded:', BrevoService);
 console.log('ApiService loaded:', ApiService);
 console.log('PerformanceMonitor loaded:', PerformanceMonitor);
 console.log('Logger loaded:', Logger);
+
 // Lazy load des pages principales
 const Home = React.lazy(() => import('./pages/Home'));
 const Register = React.lazy(() => import('./pages/Register'));
@@ -40,16 +106,12 @@ const Test = React.lazy(() => import('./pages/Test'));
 const Admin = React.lazy(() => import('./pages/Admin'));
 import Login from './pages/Login';
 import RegisterComplete from './pages/RegisterComplete';
-import { StarryBackground } from './components/StarryBackground';
-import { LoadingScreen } from './components/LoadingScreen';
+
 import { useGuidanceScheduler } from './lib/hooks/useGuidanceScheduler';
 import { usePreview } from './lib/hooks/usePreview';
-import { CosmicPageTransition } from './components/CosmicPageTransition';
 import { useAuth } from './lib/hooks/useAuth.tsx';
-import { BottomNavBar } from './components/BottomNavBar';
-import { Header } from './components/Header';
-import Tabs from './components/Tabs';
-console.log('MagicButtonX loaded:', MagicButtonX);
+
+console.log('ButtonZodiak loaded:', ButtonZodiak);
 
 // Router component to encapsulate routing logic
 function AppRouter() {
@@ -126,6 +188,60 @@ function App() {
   usePreview();
   useGuidanceScheduler();
 
+  // Force inclusion of all services and components
+  useEffect(() => {
+    // Force inclusion of all services
+    console.log('Forcing service inclusion:', {
+      AstrologyService,
+      GuidanceService,
+      OpenAIService,
+      SMSService,
+      StorageService,
+      SuperAuthService,
+      SupabaseOptimizationService,
+      TrialExpiryService,
+      BrevoService,
+      ApiService,
+      PerformanceMonitor,
+      Logger
+    });
+
+    // Force inclusion of all components
+    console.log('Forcing component inclusion:', {
+      ButtonZodiak,
+      PhoneAuth,
+      SMSTest,
+      LoginButton,
+      GuidanceContent,
+      BottomNavBar,
+      Header,
+      NatalChartTab,
+      InteractiveCard,
+      Toast,
+      Tabs,
+      ProfileTab,
+      ShareModal,
+      NatalChartSVG,
+      FormattedGuidanceText,
+      PlaceAutocomplete,
+      UserListTest,
+      PlaceSearchTest,
+      PerformanceMonitorComponent,
+      Logo,
+      NatalSignature,
+      GuidanceMeter,
+      CosmicPageTransition,
+      LoadingScreen,
+      AstrologyTest,
+      ErrorBoundary,
+      AddressAutocomplete,
+      DeliveryStatus,
+      InboundMessages,
+      PageTransition,
+      StripeSubscription
+    });
+  }, []);
+
   // Déterminer si le header doit être affiché
   const hideHeaderRoutes = ['/', '/login', '/register', '/register/complete'];
   const showHeader = !hideHeaderRoutes.includes(location.pathname);
@@ -152,6 +268,48 @@ function App() {
   return (
     <div className="min-h-screen bg-cosmic-900 text-white relative">
       <StarryBackground />
+      
+      {/* Force inclusion of all components in the bundle - hidden components */}
+      <div className="hidden">
+        <ButtonZodiak>Test</ButtonZodiak>
+        <PhoneAuth />
+        <SMSTest />
+        <LoginButton showToast={() => {}} />
+        <GuidanceContent profile={{} as any} />
+        <BottomNavBar />
+        <Header />
+        <NatalChartTab profile={{} as any} />
+        <InteractiveCard>Test</InteractiveCard>
+        <Toast message="Test" onClose={() => {}} />
+        <Tabs tabs={[]} activeTab="" onTabChange={() => {}} />
+        <ProfileTab profile={{} as any} onLogout={() => {}} />
+        <ShareModal isOpen={false} onClose={() => {}} guidance={{} as any} userName="Test" />
+        <NatalChartSVG natalChart={{} as any} />
+        <FormattedGuidanceText text="Test" />
+        <PlaceAutocomplete value="" onChange={() => {}} />
+        <UserListTest />
+        <PlaceSearchTest />
+        <PerformanceMonitorComponent />
+        <Logo />
+        <NatalSignature sunSign="" moonSign="" ascendantSign="" />
+        <GuidanceMeter label="Test" score={50} icon="star" colorClass="text-blue-500" />
+        <CosmicPageTransition locationKey="test">
+          <div>Test</div>
+        </CosmicPageTransition>
+        <LoadingScreen />
+        <AstrologyTest />
+        <ErrorBoundary>
+          <div>Test</div>
+        </ErrorBoundary>
+        <AddressAutocomplete value="" onChange={() => {}} />
+        <DeliveryStatus messageId="test" />
+        <InboundMessages userId="test" />
+        <PageTransition>
+          <div>Test</div>
+        </PageTransition>
+        <StripeSubscription />
+      </div>
+      
       {/* Header unifié Zodiak */}
       {showHeader && <Header />}
       {/* Onglets globaux desktop - supprimés, ils sont maintenant dans le header */}
