@@ -21,6 +21,4 @@ export const AnimatedButtonZ = forwardRef<HTMLButtonElement, AnimatedButtonZProp
       </motion.button>
     );
   }
-);
-
-export default AnimatedButtonZ; 
+); 
