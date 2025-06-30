@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/hooks/useAuth.tsx';
 import { supabase } from '../lib/supabase';
-import { InteractiveCard } from '../components/InteractiveCard';
-import { Logo } from '../components/Logo';
-import { StarryBackground } from '../components/StarryBackground';
-import { PlaceAutocomplete } from '../components/PlaceAutocomplete';
+import InteractiveCard from '../components/InteractiveCard';
+import Logo from '../components/Logo';
+import StarryBackground from '../components/StarryBackground';
+import PlaceAutocomplete from '../components/PlaceAutocomplete';
 import { getCoordsFromPlaceString, type Place } from '../lib/places';
 import { AstrologyService } from '../lib/astrology';
 

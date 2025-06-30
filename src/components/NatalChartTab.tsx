@@ -1,18 +1,18 @@
 import { Sun, Moon, Sparkle, Star, Heart, MessageSquare } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { Profile } from '../lib/types/supabase';
-import { InteractiveCard } from './InteractiveCard';
+import InteractiveCard from './InteractiveCard';
 import { OpenAIService } from '../lib/services/OpenAIService';
 import { StorageService } from '../lib/storage';
-import { CosmicLoader } from './CosmicLoader';
-import { NatalSignature } from './NatalSignature';
+import CosmicLoader from './CosmicLoader';
+import NatalSignature from './NatalSignature';
 import { toast } from 'react-hot-toast';
 
 interface NatalChartTabProps {
   profile: Profile;
 }
 
-export function NatalChartTab({ profile }: NatalChartTabProps) {
+function NatalChartTab({ profile }: NatalChartTabProps) {
   const [interpretation, setInterpretation] = useState<string | null>(profile.natal_chart_interpretation || null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -198,120 +198,114 @@ export function NatalChartTab({ profile }: NatalChartTabProps) {
           Découvrez votre carte du ciel de naissance, {firstName}. Chaque planète révèle une facette unique de votre personnalité.
         </p>
         <div className="mt-2 mb-2 text-primary font-cinzel text-base md:text-lg">
-          {isLoadingSummary ? (
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-              <span>Génération de votre résumé astrologique...</span>
-            </div>
-          ) : astroSummary ? (
-            <div className="animate-pulse bg-cosmic-900/70 rounded-xl p-4 mx-auto max-w-xl text-base sm:text-lg md:text-xl leading-relaxed text-primary shadow-lg">
-              {astroSummary}
-            </div>
-          ) : (
-            <div className="text-gray-400">
-              Chargement de votre signature astrale...
-            </div>
-          )}
+          <NatalSignature sunSign={sunSign} moonSign={moonSign} ascendantSign={ascendantSign} />
         </div>
       </div>
 
-      {/* Signature astrale simplifiée */}
-      <NatalSignature sunSign={sunSign} moonSign={moonSign} ascendantSign={ascendantSign} />
+      {/* Résumé astrologique */}
+      {astroSummary && (
+        <InteractiveCard className="bg-gradient-to-br from-cosmic-800/80 to-cosmic-900/80 border-primary/20">
+          <div className="flex items-start gap-3">
+            <div className="text-2xl">✨</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-white mb-2 font-cinzel">Votre Signature Astrale</h3>
+              <p className="text-gray-300 leading-relaxed">{astroSummary}</p>
+            </div>
+          </div>
+        </InteractiveCard>
+      )}
 
-      {/* Grille adaptative des planètes */}
-      <div className={`grid gap-4 justify-center px-2 sm:px-4 flex-1 grid-cols-1 sm:grid-cols-2 ${
-        allPlanets.length <= 2 ? '' : allPlanets.length <= 4 ? '' : 'md:grid-cols-3'
-      }`}>
+      {/* Grille des planètes */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {allPlanets.map((planet, index) => (
           <InteractiveCard
             key={planet.name}
-            tabIndex={0}
-            aria-label={`Planète ${planet.name}, signe ${planet.sign}`}
-            className={`p-6 text-center bg-gradient-to-br ${planetBgMap[planet.name as string] || 'from-cosmic-800/40 to-cosmic-900/10'} rounded-2xl border ${planetBorderMap[planet.name as string] || 'border-white/10'} shadow-lg transition-transform duration-200 focus:ring-2 focus:ring-primary/50 outline-none hover:scale-105 hover:shadow-[0_0_24px_4px_rgba(245,203,167,0.25)] active:scale-100`}
+            className={`bg-gradient-to-br ${planetBgMap[planet.name]} ${planetBorderMap[planet.name]} p-4`}
           >
-            <div className={`mx-auto mb-3 ${planetColorMap[planet.name as string] || 'text-white'}`}>
-              {planetIconMap[planet.name as string] || <Star className="w-8 h-8" />}
+            <div className="flex items-center gap-3 mb-3">
+              <div className={planetColorMap[planet.name]}>
+                {planetIconMap[planet.name]}
+              </div>
+              <div>
+                <h4 className="font-semibold text-white font-cinzel">{planet.name}</h4>
+                <p className="text-sm text-gray-400">{planetDescriptionMap[planet.name]}</p>
+              </div>
             </div>
-            <h4 className="text-lg font-semibold font-cinzel text-white mb-1">{planet.name}</h4>
-            <p className="text-2xl font-cinzel font-bold text-white mb-2">{planet.sign}</p>
-            <p className="text-sm text-gray-300">{planetDescriptionMap[planet.name as string] || ''}</p>
+            <div className="text-center">
+              <span className={`text-lg font-bold ${planetColorMap[planet.name]}`}>
+                {planet.sign}
+              </span>
+            </div>
           </InteractiveCard>
         ))}
       </div>
 
-      {/* Section interprétation */}
-      <InteractiveCard className="p-6 bg-gradient-to-br from-cosmic-800/80 to-cosmic-900/80 rounded-2xl shadow-lg border border-primary/20">
-        <div className="text-center mb-6">
-          <h3 className="text-xl font-cinzel font-bold mb-2 bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-            Interprétation Personnalisée
-          </h3>
-          <p className="text-gray-300">
-            Une analyse approfondie de votre thème natal générée par IA
-          </p>
-        </div>
+      {/* Interprétation détaillée */}
+      {interpretation && (
+        <InteractiveCard className="bg-gradient-to-br from-cosmic-800/80 to-cosmic-900/80 border-primary/20">
+          <div className="flex items-start gap-3">
+            <div className="text-2xl">📖</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-white mb-2 font-cinzel">Interprétation Détaillée</h3>
+              <div className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+                {interpretation}
+              </div>
+            </div>
+          </div>
+        </InteractiveCard>
+      )}
 
-        {!showInterpretation && !isLoading && interpretation && (
-          <div className="text-center">
+      {/* Bouton pour générer l'interprétation */}
+      {!interpretation && !isLoading && (
+        <InteractiveCard className="bg-gradient-to-br from-cosmic-800/80 to-cosmic-900/80 border-primary/20">
+          <div className="text-center p-6">
+            <div className="text-4xl mb-4">🔮</div>
+            <h3 className="text-xl font-cinzel font-bold mb-4 bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
+              Interprétation Personnalisée
+            </h3>
+            <p className="text-gray-300 mb-6">
+              Découvrez une interprétation approfondie de votre thème natal, générée spécialement pour vous.
+            </p>
             <button
               onClick={() => setShowInterpretation(true)}
-              className="px-8 py-3 bg-gradient-to-r from-primary to-secondary text-black font-semibold rounded-lg hover:opacity-90 transition-all duration-200 flex items-center gap-2 mx-auto shadow-lg"
+              className="px-6 py-3 bg-gradient-to-r from-primary to-secondary text-black font-semibold rounded-lg hover:opacity-90 transition-all duration-200 shadow-lg"
             >
-              <Star className="w-5 h-5" />
-              Lire mon interprétation
+              Générer l'interprétation
             </button>
           </div>
-        )}
+        </InteractiveCard>
+      )}
 
-        {isLoading && (
-          <div className="flex flex-col items-center justify-center p-8">
+      {/* État de chargement */}
+      {isLoading && (
+        <InteractiveCard className="bg-gradient-to-br from-cosmic-800/80 to-cosmic-900/80 border-primary/20">
+          <div className="text-center p-8">
             <CosmicLoader />
-            <p className="mt-4 text-lg text-gray-300 animate-pulse">
-              Génération de votre interprétation astrologique...
-            </p>
-            <p className="text-sm text-gray-500 mt-2">Cela peut prendre une minute.</p>
+            <p className="text-gray-300 mt-4">Génération de votre interprétation personnalisée...</p>
           </div>
-        )}
+        </InteractiveCard>
+      )}
 
-        {error && (
-          <div className="text-center p-4">
-            <p className="text-red-400 mb-4">{error}</p>
+      {/* Erreur */}
+      {error && (
+        <InteractiveCard className="bg-gradient-to-br from-red-900/30 to-red-800/20 border-red-500/20">
+          <div className="text-center p-6">
+            <div className="text-4xl mb-4">⚠️</div>
+            <h3 className="text-xl font-cinzel font-bold mb-4 text-red-400">
+              Erreur de génération
+            </h3>
+            <p className="text-red-300 mb-6">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors border border-red-500/30"
+              className="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all duration-200"
             >
               Réessayer
             </button>
           </div>
-        )}
-
-        {showInterpretation && interpretation && (
-          <div className="space-y-4">
-            <div 
-              className="prose prose-invert max-w-none text-gray-300 leading-relaxed"
-              style={{ whiteSpace: 'pre-wrap' }}
-            >
-              {interpretation}
-            </div>
-            <div className="flex justify-center gap-4 pt-4 border-t border-white/10">
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(interpretation);
-                  toast.success('Interprétation copiée !');
-                }}
-                className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"
-              >
-                Copier
-              </button>
-              <button
-                onClick={() => setShowInterpretation(false)}
-                className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"
-              >
-                Masquer
-              </button>
-            </div>
-          </div>
-        )}
-      </InteractiveCard>
+        </InteractiveCard>
+      )}
     </div>
   );
 }
+
+export default NatalChartTab;

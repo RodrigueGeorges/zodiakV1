@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { AstrologyTest } from '../components/AstrologyTest';
-import { SMSTest } from '../components/SMSTest';
-import { UserListTest } from '../components/UserListTest';
-import { StarryBackground } from '../components/StarryBackground';
-import { Logo } from '../components/Logo';
+import AstrologyTest from '../components/AstrologyTest';
+import SMSTest from '../components/SMSTest';
+import UserListTest from '../components/UserListTest';
+import StarryBackground from '../components/StarryBackground';
+import Logo from '../components/Logo';
 import { SMSService } from '../lib/sms';
 import { SuperAuthService } from '../lib/auth';
 import { StorageService } from '../lib/storage';
 import { cn } from '../lib/utils';
-import { InteractiveCard } from '../components/InteractiveCard';
-import { PlaceSearchTest } from '../components/PlaceSearchTest';
+import InteractiveCard from '../components/InteractiveCard';
+import PlaceSearchTest from '../components/PlaceSearchTest';
 
 export function Test() {
   const [sending, setSending] = useState(false);

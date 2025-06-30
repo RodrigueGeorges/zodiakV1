@@ -5,11 +5,10 @@ import { User, CreditCard, Bell, LogOut, Edit2, Check, X, Save } from 'lucide-re
 import { cn } from '../lib/utils';
 import { useAuth } from '../lib/hooks/useAuth.tsx';
 import { supabase } from '../lib/supabase';
-import { StarryBackground } from '../components/StarryBackground';
-import { InteractiveCard } from '../components/InteractiveCard';
-import { PlaceAutocomplete } from '../components/PlaceAutocomplete';
-import type { Place } from '../lib/places';
-import { LoadingScreen } from '../components/LoadingScreen';
+import StarryBackground from '../components/StarryBackground';
+import InteractiveCard from '../components/InteractiveCard';
+import PlaceAutocomplete from '../components/PlaceAutocomplete';
+import LoadingScreen from '../components/LoadingScreen';
 import { DESIGN_TOKENS } from '../lib/constants/design';
 import { AstrologyService } from '../lib/astrology';
 

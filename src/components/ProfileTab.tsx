@@ -4,9 +4,9 @@ import { User, CreditCard, Bell, LogOut, Edit2, Check, X, Clock, Send, Sun } fro
 import { cn } from '../lib/utils';
 import type { Profile } from '../lib/types/supabase';
 import { useNavigate } from 'react-router-dom';
-import { InteractiveCard } from './InteractiveCard';
+import InteractiveCard from './InteractiveCard';
 import { toast } from 'react-hot-toast';
-import { NatalSignature } from './NatalSignature';
+import NatalSignature from './NatalSignature';
 import { useAuth } from '../lib/hooks/useAuth';
 import { supabase } from '../lib/supabase';
 
@@ -15,7 +15,7 @@ interface ProfileTabProps {
   onLogout: () => void;
 }
 
-export function ProfileTab({ profile, onLogout }: ProfileTabProps) {
+function ProfileTab({ profile, onLogout }: ProfileTabProps) {
   const navigate = useNavigate();
   const { user, refreshProfile } = useAuth();
 
@@ -385,3 +385,5 @@ export function ProfileTab({ profile, onLogout }: ProfileTabProps) {
     </div>
   );
 }
+
+export default ProfileTab;

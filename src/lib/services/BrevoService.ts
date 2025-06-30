@@ -5,7 +5,7 @@ interface BrevoConfig {
   sender: string;
 }
 
-export class BrevoService {
+class BrevoService {
   private static readonly config: BrevoConfig = {
     apiKey: import.meta.env.VITE_BREVO_API_KEY,
     sender: 'Zodiak'
@@ -85,4 +85,6 @@ export class BrevoService {
       throw error instanceof ApiError ? error : new ApiError('Erreur lors de l\'envoi du SMS de guidance', 'API_ERROR');
     }
   }
-} 
+}
+
+export default BrevoService; 

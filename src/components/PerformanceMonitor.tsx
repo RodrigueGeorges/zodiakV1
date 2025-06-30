@@ -125,4 +125,6 @@ export function PerformanceMonitor({ className, showDetails = false }: Performan
       </AnimatePresence>
     </>
   );
-} 
+}
+
+export default PerformanceMonitor; 

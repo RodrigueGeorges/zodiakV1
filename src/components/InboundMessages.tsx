@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { MessageSquare, Loader2 } from 'lucide-react';
 import { SMSService } from '../lib/sms';
 import { cn } from '../lib/utils';
-import { InteractiveCard } from './InteractiveCard';
+import InteractiveCard from './InteractiveCard';
 import type { InboundMessage } from '../lib/types/supabase';
 
 interface InboundMessagesProps {
@@ -80,3 +80,5 @@ export function InboundMessages({ userId }: InboundMessagesProps) {
     </InteractiveCard>
   );
 }
+
+export default InboundMessages;

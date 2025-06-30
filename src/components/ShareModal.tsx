@@ -162,4 +162,6 @@ export function ShareModal({ isOpen, onClose, guidance, userName }: ShareModalPr
       </motion.div>
     </motion.div>
   );
-} 
+}
+
+export default ShareModal; 

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
-import { Logo } from './Logo';
+import Logo from './Logo';
 import { cn } from '../lib/utils';
-import { CosmicLoader } from './CosmicLoader';
+import CosmicLoader from './CosmicLoader';
 
 interface LoadingScreenProps {
   message?: string;
@@ -9,7 +9,7 @@ interface LoadingScreenProps {
   onRetry?: () => void;
 }
 
-export function LoadingScreen({ message = 'Chargement...', error, onRetry }: LoadingScreenProps) {
+function LoadingScreen({ message = 'Chargement...', error, onRetry }: LoadingScreenProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-cosmic-900 text-white">
       <CosmicLoader />
@@ -26,3 +26,5 @@ export function LoadingScreen({ message = 'Chargement...', error, onRetry }: Loa
     </div>
   );
 }
+
+export default LoadingScreen;

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LoadingScreen } from '../components/LoadingScreen';
-import { GuidanceContent } from '../components/GuidanceContent';
+import LoadingScreen from '../components/LoadingScreen';
+import GuidanceContent from '../components/GuidanceContent';
 import { useAuth } from '../lib/hooks/useAuth';
 
 const pageVariants = {

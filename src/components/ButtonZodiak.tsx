@@ -21,4 +21,6 @@ export const ButtonZodiak = forwardRef<HTMLButtonElement, ButtonZodiakProps>(
       </motion.button>
     );
   }
-); 
+);
+
+export default ButtonZodiak; 

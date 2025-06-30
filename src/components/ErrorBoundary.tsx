@@ -18,7 +18,7 @@ function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetError
   )
 }
 
-export function ErrorBoundary({ children }: { children: React.ReactNode }) {
+function ErrorBoundary({ children }: { children: React.ReactNode }) {
   return (
     <ReactErrorBoundary
       FallbackComponent={ErrorFallback}
@@ -33,4 +33,6 @@ export function ErrorBoundary({ children }: { children: React.ReactNode }) {
       {children}
     </ReactErrorBoundary>
   )
-} 
+}
+
+export default ErrorBoundary; 

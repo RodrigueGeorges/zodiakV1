@@ -1,19 +1,30 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogIn, X } from 'lucide-react';
+import { LogIn, X, Loader2, User } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { InteractiveCard } from './InteractiveCard';
-import { PhoneAuth } from './PhoneAuth';
+import InteractiveCard from './InteractiveCard';
+import Toast from './Toast';
+import { useAuth } from '../lib/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { SuperAuthService } from '../lib/auth';
 import { StorageService } from '../lib/storage';
 import { supabase } from '../lib/supabase';
+import { ButtonZodiak } from './ButtonZodiak';
+import PhoneAuth from './PhoneAuth';
 
 interface LoginButtonProps {
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
+  className?: string;
+  variant?: 'default' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
 }
 
-export function LoginButton({ showToast }: LoginButtonProps) {
+function LoginButton({ 
+  showToast, 
+  className = '', 
+  variant = 'default',
+  size = 'md'
+}: LoginButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -24,6 +35,7 @@ export function LoginButton({ showToast }: LoginButtonProps) {
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -54,6 +66,31 @@ export function LoginButton({ showToast }: LoginButtonProps) {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    // Vérifier l'état de connexion actuel
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    
+    checkUser();
+
+    // Écouter les changements d'authentification
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user ?? null);
+        
+        if (event === 'SIGNED_IN') {
+          showToast('Connexion réussie !', 'success');
+        } else if (event === 'SIGNED_OUT') {
+          showToast('Déconnexion réussie', 'success');
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, [showToast]);
+
   const handleSuccess = async (userId: string) => {
     try {
       setIsLoading(true);
@@ -83,14 +120,16 @@ export function LoginButton({ showToast }: LoginButtonProps) {
   };
 
   const handleLogout = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      await SuperAuthService.signOut();
-      showToast('Déconnexion réussie', 'success');
-      navigate('/', { replace: true });
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Logout error:', error);
+        showToast('Erreur lors de la déconnexion', 'error');
+      }
     } catch (error) {
+      console.error('Logout error:', error);
       showToast('Erreur lors de la déconnexion', 'error');
-      console.error('Error logging out:', error);
     } finally {
       setIsLoading(false);
     }
@@ -145,34 +184,94 @@ export function LoginButton({ showToast }: LoginButtonProps) {
     }
   };
 
+  const handleLogin = async () => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      });
+
+      if (error) {
+        console.error('Login error:', error);
+        showToast('Erreur lors de la connexion', 'error');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      showToast('Erreur lors de la connexion', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getButtonContent = () => {
+    if (isLoading) {
+      return (
+        <>
+          <Loader2 className="w-4 h-4 animate-spin" />
+          {user ? 'Déconnexion...' : 'Connexion...'}
+        </>
+      );
+    }
+
+    if (user) {
+      return (
+        <>
+          <User className="w-4 h-4" />
+          {user.email ? user.email.split('@')[0] : 'Profil'}
+        </>
+      );
+    }
+
+    return (
+      <>
+        <LogIn className="w-4 h-4" />
+        Se connecter
+      </>
+    );
+  };
+
+  const getButtonStyles = () => {
+    const baseStyles = 'flex items-center gap-2 font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+    
+    const sizeStyles = {
+      sm: 'px-3 py-1.5 text-sm',
+      md: 'px-4 py-2 text-base',
+      lg: 'px-6 py-3 text-lg'
+    };
+
+    const variantStyles = {
+      default: 'bg-gradient-to-r from-[#F5CBA7] to-[#D4A373] text-gray-900 hover:opacity-90 focus:ring-[#F5CBA7]',
+      outline: 'border border-[#F5CBA7] text-[#F5CBA7] hover:bg-[#F5CBA7] hover:text-gray-900 focus:ring-[#F5CBA7]',
+      ghost: 'text-[#F5CBA7] hover:bg-[#F5CBA7]/10 focus:ring-[#F5CBA7]'
+    };
+
+    return cn(
+      baseStyles,
+      sizeStyles[size],
+      variantStyles[variant],
+      className
+    );
+  };
+
   if (isLoading) return null;
 
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-50 p-4 flex justify-end safe-area-inset-top">
-        <motion.button
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          onClick={isAuthenticated ? handleLogout : () => setIsOpen(true)}
-          className={cn(
-            'px-4 sm:px-6 py-2 sm:py-3 rounded-full',
-            'bg-white/5 backdrop-blur-lg',
-            'border border-white/10',
-            'text-white hover:text-primary',
-            'flex items-center gap-2',
-            'shadow-lg hover:shadow-xl',
-            'transition-all duration-300',
-            'hover:scale-105',
-            'focus:outline-none focus:ring-2 focus:ring-primary/50',
-            'text-sm sm:text-base',
-            'touch-manipulation'
-          )}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <ButtonZodiak
+          onClick={user ? handleLogout : handleLogin}
+          disabled={isLoading}
+          className={getButtonStyles()}
         >
-          <LogIn className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span>{isAuthenticated ? 'Déconnexion' : 'Se connecter'}</span>
-        </motion.button>
+          {getButtonContent()}
+        </ButtonZodiak>
       </div>
 
       <AnimatePresence>
@@ -223,7 +322,10 @@ export function LoginButton({ showToast }: LoginButtonProps) {
                   </div>
 
                   {authMode === 'sms' ? (
-                    <PhoneAuth onSuccess={handleSuccess} inputRef={inputRef} />
+                    <PhoneAuth
+                      onSuccess={handleSuccess}
+                      ref={inputRef}
+                    />
                   ) : (
                     <form onSubmit={handleEmailLogin} className="space-y-4">
                       <div>
@@ -274,3 +376,5 @@ export function LoginButton({ showToast }: LoginButtonProps) {
     </>
   );
 }
+
+export default LoginButton;

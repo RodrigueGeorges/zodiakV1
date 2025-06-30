@@ -46,3 +46,5 @@ export function StripeSubscription({ className }: StripeSubscriptionProps) {
     </motion.div>
   );
 }
+
+export default StripeSubscription;

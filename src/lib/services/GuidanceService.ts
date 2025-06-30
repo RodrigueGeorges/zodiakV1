@@ -7,7 +7,7 @@ import { TrialExpiryService } from './TrialExpiryService';
 import type { Profile } from '../types/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
-export class GuidanceService {
+class GuidanceService {
   private static readonly GUIDANCE_TIME = '09:00';
   private static readonly APP_URL = import.meta.env.PROD 
     ? 'https://zodiak.app'
@@ -121,3 +121,5 @@ export class GuidanceService {
     }
   }
 }
+
+export default GuidanceService;

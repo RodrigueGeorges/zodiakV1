@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-export function CosmicLoader() {
+function CosmicLoader() {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
       <div className="relative w-24 h-24">
@@ -47,4 +47,6 @@ export function CosmicLoader() {
       <span className="mt-6 text-primary font-cinzel text-lg animate-pulse">Chargement cosmique...</span>
     </div>
   );
-} 
+}
+
+export default CosmicLoader; 

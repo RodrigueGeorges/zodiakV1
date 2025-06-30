@@ -8,7 +8,7 @@ interface DeliveryStatusProps {
   messageId: string;
 }
 
-export function DeliveryStatus({ messageId }: DeliveryStatusProps) {
+function DeliveryStatus({ messageId }: DeliveryStatusProps) {
   const [status, setStatus] = useState<DeliveryReceipt | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -119,3 +119,5 @@ export function DeliveryStatus({ messageId }: DeliveryStatusProps) {
     </div>
   );
 }
+
+export default DeliveryStatus;

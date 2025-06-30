@@ -12,7 +12,7 @@ interface AddressAutocompleteProps {
   placeholder?: string;
 }
 
-export function AddressAutocomplete({
+function AddressAutocomplete({
   value,
   onChange,
   error,
@@ -187,3 +187,5 @@ export function AddressAutocomplete({
     </div>
   );
 }
+
+export default AddressAutocomplete;

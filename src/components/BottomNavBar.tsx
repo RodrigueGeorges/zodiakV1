@@ -1,35 +1,44 @@
-import { User, Sparkle, Sun } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { User, Compass, MessageSquare, Star } from 'lucide-react';
+import { cn } from '../lib/utils';
 
-const tabs = [
-  { label: 'Profil', icon: <User className="w-6 h-6" />, path: '/profile' },
-  { label: 'Guidance', icon: <Sparkle className="w-6 h-6" />, path: '/guidance' },
-  { label: 'Thème', icon: <Sun className="w-6 h-6" />, path: '/natal' },
-];
-
-export function BottomNavBar() {
-  const navigate = useNavigate();
+function BottomNavBar() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const navItems = [
+    { path: '/', icon: Star, label: 'Accueil' },
+    { path: '/profile', icon: User, label: 'Profil' },
+    { path: '/natal', icon: Compass, label: 'Natal' },
+    { path: '/guidance', icon: MessageSquare, label: 'Guidance' },
+  ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-cosmic-900/95 backdrop-blur-lg border-t border-primary/20 shadow-2xl rounded-t-2xl flex justify-around items-center py-2 px-2 md:hidden">
-      {tabs.map(tab => {
-        const isActive = location.pathname === tab.path;
-        return (
-          <button
-            key={tab.label}
-            onClick={() => navigate(tab.path)}
-            className={`flex flex-col items-center gap-0.5 text-xs transition-all duration-200 font-cinzel ${
-              isActive 
-                ? 'text-primary' 
-                : 'text-gray-300 hover:text-primary'
-            }`}
-          >
-            {tab.icon}
-            <span>{tab.label}</span>
-          </button>
-        );
-      })}
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-gray-900/80 backdrop-blur-lg border-t border-gray-700 safe-area-inset-bottom">
+      <div className="flex justify-around items-center px-4 py-2">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path;
+          
+          return (
+            <button
+              key={item.path}
+              onClick={() => navigate(item.path)}
+              className={cn(
+                'flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200',
+                'text-gray-400 hover:text-white',
+                isActive && 'text-[#F5CBA7] bg-[#F5CBA7]/10'
+              )}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="text-xs font-medium">{item.label}</span>
+            </button>
+          );
+        })}
+      </div>
     </nav>
   );
-} 
+}
+
+export default BottomNavBar; 

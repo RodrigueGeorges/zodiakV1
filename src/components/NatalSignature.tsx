@@ -80,3 +80,5 @@ export function NatalSignature({ sunSign, moonSign, ascendantSign }: NatalSignat
     </div>
   );
 }
+
+export default NatalSignature;

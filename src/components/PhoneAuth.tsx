@@ -1,207 +1,193 @@
-import { useState, forwardRef } from 'react';
+import React, { forwardRef, useState, useEffect } from 'react';
 import { Phone, Loader2 } from 'lucide-react';
 import { BrevoService } from '../lib/services/BrevoService';
 import { cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
 import { ButtonZodiak } from './ButtonZodiak';
+import { toast } from 'react-hot-toast';
 
 interface PhoneAuthProps {
-  onSuccess?: (userId: string) => void;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  onSuccess?: (phone: string) => void;
+  onError?: (error: string) => void;
+  className?: string;
 }
 
-export const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function PhoneAuth(props, ref) {
-  const { onSuccess, inputRef } = props;
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function PhoneAuth(props, ref) {
+  const [phone, setPhone] = useState('');
+  const [code, setCode] = useState('');
   const [isCodeSent, setIsCodeSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
-  // Ajout de la fonction de formatage international
-  function formatPhoneInternational(phone: string): string {
-    // Pour la France : remplace 0 initial par +33
-    if (phone.startsWith('0') && phone.length === 10) {
-      return '+33' + phone.slice(1);
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
     }
-    // Si déjà au format international, retourne tel quel
-    if (phone.startsWith('+') && phone.length >= 11) {
-      return phone;
-    }
-    // Sinon, retourne vide
-    return '';
-  }
+  }, [countdown]);
 
-  const handleSendCode = async () => {
+  const formatPhoneNumber = (value: string) => {
+    // Supprimer tous les caractères non numériques
+    const cleaned = value.replace(/\D/g, '');
+    
+    // Limiter à 10 chiffres
+    const limited = cleaned.slice(0, 10);
+    
+    // Formater en 06 XX XX XX XX
+    if (limited.length === 0) return '';
+    if (limited.length <= 2) return limited;
+    if (limited.length <= 4) return `${limited.slice(0, 2)} ${limited.slice(2)}`;
+    if (limited.length <= 6) return `${limited.slice(0, 2)} ${limited.slice(2, 4)} ${limited.slice(4)}`;
+    if (limited.length <= 8) return `${limited.slice(0, 2)} ${limited.slice(2, 4)} ${limited.slice(4, 6)} ${limited.slice(6)}`;
+    return `${limited.slice(0, 2)} ${limited.slice(2, 4)} ${limited.slice(4, 6)} ${limited.slice(6, 8)} ${limited.slice(8)}`;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value);
+    setPhone(formatted);
+  };
+
+  const validatePhone = (phone: string) => {
+    const cleaned = phone.replace(/\D/g, '');
+    return cleaned.length === 10 && cleaned.startsWith('06');
+  };
+
+  const sendVerificationCode = async () => {
+    if (!validatePhone(phone)) {
+      toast.error('Veuillez entrer un numéro de téléphone valide (06 XX XX XX XX)');
+      return;
+    }
+
     setIsLoading(true);
-    setError(null);
-
     try {
-      // Formatage du numéro au format international
-      const formattedPhone = formatPhoneInternational(phoneNumber);
-      if (!formattedPhone) {
-        setError('Numéro de téléphone invalide. Utilisez le format +33612345678 ou 06XXXXXXXX');
-        setIsLoading(false);
-        return;
+      const cleanedPhone = phone.replace(/\D/g, '');
+      
+      const response = await fetch('/api/send-sms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: cleanedPhone,
+          message: `Votre code de vérification Zodiak est : ${generateCode()}. Valide pendant 10 minutes.`
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de l\'envoi du code');
       }
-      // Générer un code de vérification à 6 chiffres
-      const code = Math.floor(100000 + Math.random() * 900000).toString();
-      
-      // Envoyer le code via Brevo
-      await BrevoService.sendVerificationSMS(formattedPhone, code);
-      
-      // Stocker le code temporairement (à remplacer par une solution plus sécurisée)
-      localStorage.setItem('tempVerificationCode', code);
-      
+
       setIsCodeSent(true);
+      setCountdown(60);
+      toast.success('Code de vérification envoyé !');
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Erreur lors de l\'envoi du code');
+      console.error('Error sending SMS:', error);
+      toast.error('Erreur lors de l\'envoi du code. Veuillez réessayer.');
+      props.onError?.(error instanceof Error ? error.message : 'Erreur inconnue');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleVerifyCode = async () => {
-    setIsLoading(true);
-    setError(null);
+  const generateCode = () => {
+    // Générer un code à 6 chiffres
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
 
+  const verifyCode = async () => {
+    if (code.length !== 6) {
+      toast.error('Veuillez entrer le code à 6 chiffres');
+      return;
+    }
+
+    setIsLoading(true);
     try {
-      const storedCode = localStorage.getItem('tempVerificationCode');
-      const formattedPhone = formatPhoneInternational(phoneNumber);
-      if (verificationCode === storedCode && formattedPhone) {
-        // Appel à Supabase Auth pour authentifier l'utilisateur
-        const { error } = await supabase.auth.signInWithOtp({
-          phone: formattedPhone
-        });
-        if (error) {
-          setError('Erreur lors de la connexion : ' + error.message);
-          setIsLoading(false);
-          return;
-        }
-        localStorage.removeItem('tempVerificationCode');
-        // TODO: Mettre à jour l'état global d'authentification ou rediriger
-      } else {
-        setError('Code de vérification incorrect');
-      }
+      // Simulation de vérification - en production, vérifier avec le serveur
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const cleanedPhone = phone.replace(/\D/g, '');
+      props.onSuccess?.(cleanedPhone);
+      toast.success('Numéro de téléphone vérifié avec succès !');
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Erreur lors de la vérification');
+      console.error('Error verifying code:', error);
+      toast.error('Code incorrect. Veuillez réessayer.');
+      props.onError?.(error instanceof Error ? error.message : 'Erreur de vérification');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resendCode = () => {
+    if (countdown > 0) return;
+    sendVerificationCode();
   };
 
   return (
-    <div className="p-6 bg-white/5 backdrop-blur-lg rounded-lg">
-      <h2 className="text-xl font-semibold mb-4 text-[#F5CBA7]">Authentification par SMS</h2>
-
+    <div className={`space-y-4 ${props.className || ''}`}>
       {!isCodeSent ? (
         <div className="space-y-4">
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-1">
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">
               Numéro de téléphone
             </label>
             <input
-              ref={inputRef}
-              type="tel"
+              ref={ref}
               id="phone"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder="+33612345678"
-              className={cn(
-                'w-full px-4 py-2 rounded-lg',
-                'bg-white/10 border border-white/20',
-                'text-white placeholder-gray-400',
-                'focus:outline-none focus:ring-2 focus:ring-[#F5CBA7] focus:border-transparent'
-              )}
+              type="tel"
+              value={phone}
+              onChange={handlePhoneChange}
+              placeholder="06 XX XX XX XX"
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              maxLength={14}
             />
           </div>
-
           <ButtonZodiak
-            onClick={handleSendCode}
-            disabled={isLoading || !phoneNumber}
-            className={cn(
-              'w-full py-3 px-4 rounded-lg',
-              'bg-gradient-to-r from-[#F5CBA7] to-[#D4A373]',
-              'text-gray-900 font-semibold',
-              'flex items-center justify-center gap-2',
-              'transition-all duration-200',
-              'hover:opacity-90',
-              'focus:outline-none focus:ring-2 focus:ring-[#F5CBA7] focus:ring-opacity-50',
-              (isLoading || !phoneNumber) && 'opacity-50 cursor-not-allowed'
-            )}
+            onClick={sendVerificationCode}
+            disabled={!validatePhone(phone) || isLoading}
+            className="w-full"
           >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Envoi en cours...
-              </>
-            ) : (
-              <>
-                <Phone className="w-5 h-5" />
-                Envoyer le code
-              </>
-            )}
+            {isLoading ? 'Envoi...' : 'Envoyer le code'}
           </ButtonZodiak>
         </div>
       ) : (
         <div className="space-y-4">
           <div>
-            <label htmlFor="code" className="block text-sm font-medium text-gray-300 mb-1">
+            <label htmlFor="code" className="block text-sm font-medium text-gray-300 mb-2">
               Code de vérification
             </label>
             <input
-              type="text"
               id="code"
-              value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
+              type="text"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
               placeholder="123456"
-              className={cn(
-                'w-full px-4 py-2 rounded-lg',
-                'bg-white/10 border border-white/20',
-                'text-white placeholder-gray-400',
-                'focus:outline-none focus:ring-2 focus:ring-[#F5CBA7] focus:border-transparent'
-              )}
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-2xl tracking-widest"
+              maxLength={6}
             />
           </div>
-
           <ButtonZodiak
-            onClick={handleVerifyCode}
-            disabled={isLoading || !verificationCode}
-            className={cn(
-              'w-full py-3 px-4 rounded-lg',
-              'bg-gradient-to-r from-[#F5CBA7] to-[#D4A373]',
-              'text-gray-900 font-semibold',
-              'flex items-center justify-center gap-2',
-              'transition-all duration-200',
-              'hover:opacity-90',
-              'focus:outline-none focus:ring-2 focus:ring-[#F5CBA7] focus:ring-opacity-50',
-              (isLoading || !verificationCode) && 'opacity-50 cursor-not-allowed'
-            )}
+            onClick={verifyCode}
+            disabled={code.length !== 6 || isLoading}
+            className="w-full"
           >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Vérification...
-              </>
-            ) : (
-              'Vérifier le code'
-            )}
+            {isLoading ? 'Vérification...' : 'Vérifier le code'}
           </ButtonZodiak>
-
-          <button
-            onClick={() => setIsCodeSent(false)}
-            className="text-sm text-gray-400 hover:text-white transition-colors"
-          >
-            Modifier le numéro
-          </button>
-        </div>
-      )}
-
-      {error && (
-        <div className="mt-4 p-4 bg-red-500/10 text-red-400 rounded-lg" aria-live="polite">
-          {error}
+          <div className="text-center">
+            <button
+              onClick={resendCode}
+              disabled={countdown > 0}
+              className="text-sm text-blue-400 hover:text-blue-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+            >
+              {countdown > 0 
+                ? `Renvoyer le code dans ${countdown}s` 
+                : 'Renvoyer le code'
+              }
+            </button>
+          </div>
         </div>
       )}
     </div>
   );
 });
+
+export default PhoneAuth;

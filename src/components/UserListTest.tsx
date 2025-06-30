@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, Trash2, Loader2 } from 'lucide-react';
 import { StorageService } from '../lib/storage';
-import { InteractiveCard } from './InteractiveCard';
+import InteractiveCard from './InteractiveCard';
 import type { Profile } from '../lib/types/supabase';
 
 export function UserListTest() {
@@ -127,3 +127,5 @@ export function UserListTest() {
     </InteractiveCard>
   );
 }
+
+export default UserListTest;

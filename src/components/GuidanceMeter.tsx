@@ -7,7 +7,7 @@ interface GuidanceMeterProps {
   colorClass: string;
 }
 
-export function GuidanceMeter({ label, score, icon, colorClass }: GuidanceMeterProps) {
+function GuidanceMeter({ label, score, icon, colorClass }: GuidanceMeterProps) {
   const numericScore = score ?? 0;
   const radius = 40;
   const circumference = 2 * Math.PI * radius;
@@ -56,4 +56,6 @@ export function GuidanceMeter({ label, score, icon, colorClass }: GuidanceMeterP
       </div>
     </div>
   );
-} 
+}
+
+export default GuidanceMeter; 

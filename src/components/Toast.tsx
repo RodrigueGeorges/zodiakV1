@@ -1,96 +1,78 @@
-import { useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Check, X, AlertCircle, XCircle, X as CloseIcon } from 'lucide-react';
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, XCircle, AlertCircle, X } from 'lucide-react';
+import { cn } from '../lib/utils';
 
-export interface ToastProps {
+interface ToastProps {
   message: string;
-  type?: 'success' | 'error' | 'info' | 'warning';
+  type?: 'success' | 'error' | 'info';
+  isVisible: boolean;
   onClose: () => void;
   duration?: number;
 }
 
-export function Toast({ message, type = 'info', onClose, duration = 3500 }: ToastProps) {
-  useEffect(() => {
-    const timer = setTimeout(onClose, duration);
-    return () => clearTimeout(timer);
-  }, [onClose, duration]);
+function Toast({ 
+  message, 
+  type = 'info', 
+  isVisible, 
+  onClose, 
+  duration = 5000 
+}: ToastProps) {
+  React.useEffect(() => {
+    if (isVisible && duration > 0) {
+      const timer = setTimeout(onClose, duration);
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, duration, onClose]);
 
-  const toastConfig = {
-    success: {
-      icon: <Check className="w-5 h-5" />,
-      bg: 'bg-green-500/10',
-      border: 'border-green-500/30',
-      text: 'text-green-400',
-      iconBg: 'bg-green-500/20',
-      iconColor: 'text-green-400'
-    },
-    error: {
-      icon: <X className="w-5 h-5" />,
-      bg: 'bg-red-500/10',
-      border: 'border-red-500/30',
-      text: 'text-red-400',
-      iconBg: 'bg-red-500/20',
-      iconColor: 'text-red-400'
-    },
-    warning: {
-      icon: <AlertCircle className="w-5 h-5" />,
-      bg: 'bg-yellow-500/10',
-      border: 'border-yellow-500/30',
-      text: 'text-yellow-400',
-      iconBg: 'bg-yellow-500/20',
-      iconColor: 'text-yellow-400'
-    },
-    info: {
-      icon: <XCircle className="w-5 h-5" />,
-      bg: 'bg-primary/10',
-      border: 'border-primary/30',
-      text: 'text-primary',
-      iconBg: 'bg-primary/20',
-      iconColor: 'text-primary'
+  const getIcon = () => {
+    switch (type) {
+      case 'success':
+        return <CheckCircle className="w-5 h-5 text-green-400" />;
+      case 'error':
+        return <XCircle className="w-5 h-5 text-red-400" />;
+      default:
+        return <AlertCircle className="w-5 h-5 text-blue-400" />;
     }
   };
 
-  const config = toastConfig[type];
+  const getStyles = () => {
+    const baseStyles = 'flex items-center gap-3 p-4 rounded-lg shadow-lg border';
+    
+    switch (type) {
+      case 'success':
+        return cn(baseStyles, 'bg-green-900/90 border-green-700 text-green-100');
+      case 'error':
+        return cn(baseStyles, 'bg-red-900/90 border-red-700 text-red-100');
+      default:
+        return cn(baseStyles, 'bg-blue-900/90 border-blue-700 text-blue-100');
+    }
+  };
 
   return (
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: 50, scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 50, scale: 0.9 }}
-        transition={{ 
-          type: "spring", 
-          stiffness: 500, 
-          damping: 30,
-          duration: 0.3 
-        }}
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-4 rounded-xl shadow-2xl backdrop-blur-lg border ${config.bg} ${config.border} ${config.text} font-medium text-base max-w-sm mx-4`}
-        role="status"
-        aria-live="polite"
-      >
-        <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-lg ${config.iconBg} ${config.iconColor}`}>
-            {config.icon}
-          </div>
-          <span className="flex-1">{message}</span>
-          <motion.button
-            onClick={onClose}
-            className={`p-1 rounded-lg hover:bg-white/10 transition-colors ${config.text}`}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <CloseIcon className="w-4 h-4" />
-          </motion.button>
-        </div>
-        
-        {/* Barre de progression */}
+      {isVisible && (
         <motion.div
-          className={`absolute bottom-0 left-0 h-1 ${config.iconBg} rounded-b-xl`}
-          initial={{ width: '100%' }}
-          animate={{ width: '0%' }}
-          transition={{ duration: duration / 1000, ease: 'linear' }}
-        />
-      </motion.div>
+          initial={{ opacity: 0, y: -50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -50, scale: 0.9 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="fixed top-4 right-4 z-50 max-w-sm"
+        >
+          <div className={getStyles()}>
+            {getIcon()}
+            <span className="flex-1 text-sm font-medium">{message}</span>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
-} 
+}
+
+export default Toast; 

@@ -1,9 +1,9 @@
 import { useAuth } from '../lib/hooks/useAuth.tsx';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { NatalChartTab } from '../components/NatalChartTab';
-import { LoadingScreen } from '../components/LoadingScreen';
-import { StarryBackground } from '../components/StarryBackground';
+import NatalChartTab from '../components/NatalChartTab';
+import LoadingScreen from '../components/LoadingScreen';
+import StarryBackground from '../components/StarryBackground';
 
 export default function Natal() {
   const { profile, isLoading, isAuthenticated } = useAuth();

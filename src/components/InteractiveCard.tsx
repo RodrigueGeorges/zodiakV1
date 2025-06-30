@@ -9,7 +9,7 @@ interface InteractiveCardProps {
   'aria-label'?: string;
 }
 
-export function InteractiveCard({ children, className = '', onClick, tabIndex, 'aria-label': ariaLabel }: InteractiveCardProps) {
+function InteractiveCard({ children, className = '', onClick, tabIndex, 'aria-label': ariaLabel }: InteractiveCardProps) {
   return (
     <motion.div
       className={`relative bg-white/5 backdrop-blur-lg rounded-xl overflow-hidden border border-white/10 shadow-xl ${className}`}
@@ -35,3 +35,5 @@ export function InteractiveCard({ children, className = '', onClick, tabIndex, '
     </motion.div>
   );
 }
+
+export default InteractiveCard;

@@ -61,3 +61,5 @@ export function StarryBackground() {
     />
   );
 }
+
+export default StarryBackground;

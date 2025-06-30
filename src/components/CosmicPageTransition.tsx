@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRef, useEffect } from 'react';
 
-export function CosmicPageTransition({ children, locationKey }: { children: React.ReactNode; locationKey: string }) {
+function CosmicPageTransition({ children, locationKey }: { children: React.ReactNode; locationKey: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Animation étoiles filantes sur transition
@@ -26,6 +26,7 @@ export function CosmicPageTransition({ children, locationKey }: { children: Reac
     }));
 
     function animate() {
+      if (!ctx) return;
       ctx.clearRect(0, 0, width, height);
       shootingStars.forEach(star => {
         ctx.save();
@@ -75,4 +76,6 @@ export function CosmicPageTransition({ children, locationKey }: { children: Reac
       </motion.div>
     </AnimatePresence>
   );
-} 
+}
+
+export default CosmicPageTransition; 

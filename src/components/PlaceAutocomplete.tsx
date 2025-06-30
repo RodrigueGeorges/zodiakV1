@@ -183,3 +183,5 @@ export function PlaceAutocomplete({
     </div>
   );
 }
+
+export default PlaceAutocomplete;

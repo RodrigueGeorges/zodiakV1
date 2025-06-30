@@ -3,10 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Star, Sparkle, Moon, Sun, Compass, Clock, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
-import { PhoneAuth } from '../components/PhoneAuth';
-import { Logo } from '../components/Logo';
-import { StarryBackground } from '../components/StarryBackground';
-import { InteractiveCard } from '../components/InteractiveCard';
+import PhoneAuth from '../components/PhoneAuth';
+import Logo from '../components/Logo';
+import StarryBackground from '../components/StarryBackground';
+import InteractiveCard from '../components/InteractiveCard';
 import { supabase } from '../lib/supabase';
 
 export default function Home() {

@@ -28,7 +28,7 @@ const pageVariants = {
   }
 };
 
-export function PageTransition({ children }: PageTransitionProps) {
+function PageTransition({ children }: PageTransitionProps) {
   return (
     <motion.div
       initial="initial"
@@ -40,3 +40,5 @@ export function PageTransition({ children }: PageTransitionProps) {
     </motion.div>
   );
 }
+
+export default PageTransition;

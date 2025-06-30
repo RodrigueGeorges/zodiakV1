@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { InteractiveCard } from '../components/InteractiveCard';
-import { PhoneAuth } from '../components/PhoneAuth';
+import InteractiveCard from '../components/InteractiveCard';
+import PhoneAuth from '../components/PhoneAuth';
 import { supabase } from '../lib/supabase';
-import { Logo } from '../components/Logo';
-import { StarryBackground } from '../components/StarryBackground';
+import Logo from '../components/Logo';
+import StarryBackground from '../components/StarryBackground';
 import { cn } from '../lib/utils';
 
 export default function Register() {

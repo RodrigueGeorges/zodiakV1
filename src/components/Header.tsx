@@ -1,46 +1,61 @@
-import { Logo } from './Logo/index';
-import Tabs from './Tabs';
+import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../lib/hooks/useAuth';
+import { Logo } from './Logo';
+import { cn } from '../lib/utils';
 
-export function Header() {
-  const navigate = useNavigate();
+function Header() {
   const location = useLocation();
-  const { signOut } = useAuth();
+  const navigate = useNavigate();
 
-  // Définir les onglets globaux
   const tabs = [
-    { key: 'profile', label: 'Profil' },
-    { key: 'natal', label: 'Thème Natal' },
-    { key: 'guidance', label: 'Guidance' }
+    { key: 'profile', label: 'Profil', path: '/profile' },
+    { key: 'natal', label: 'Thème Natal', path: '/natal' },
+    { key: 'guidance', label: 'Guidance', path: '/guidance' }
   ];
-  // Déduire l'onglet actif selon la route
-  let activeTab = 'profile';
-  if (location.pathname.startsWith('/natal')) activeTab = 'natal';
-  else if (location.pathname.startsWith('/guidance')) activeTab = 'guidance';
-  else if (location.pathname.startsWith('/profile')) activeTab = 'profile';
+
+  const getActiveTab = () => {
+    if (location.pathname.startsWith('/natal')) return 'natal';
+    if (location.pathname.startsWith('/guidance')) return 'guidance';
+    if (location.pathname.startsWith('/profile')) return 'profile';
+    return 'profile';
+  };
 
   const handleTabChange = (key: string) => {
-    if (key === 'profile') navigate('/profile');
-    else if (key === 'natal') navigate('/natal');
-    else if (key === 'guidance') navigate('/guidance');
+    const tab = tabs.find(t => t.key === key);
+    if (tab) {
+      navigate(tab.path);
+    }
   };
 
   return (
-    <header className="w-full flex flex-col items-center justify-between px-4 md:px-8 py-0.5 md:py-2 h-12 md:h-auto bg-cosmic-900/80 backdrop-blur-lg border-b border-primary/20 shadow-lg z-50">
-      <div className="w-full flex items-center gap-2 md:gap-4 cursor-pointer h-full" onClick={() => navigate('/guidance')}> 
-        <div className="w-12 h-12 flex items-center justify-center md:hidden">
-          <Logo size="sm" />
+    <header className="sticky top-0 z-30 bg-gray-900/80 backdrop-blur-lg border-b border-gray-700">
+      <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-4">
+          <Logo className="w-8 h-8" />
+          <h1 className="text-lg font-semibold text-white">Zodiak</h1>
         </div>
-        <div className="hidden md:flex w-32 h-32 items-center justify-center">
-          <Logo size="md" />
-        </div>
-        <span className="hidden md:block text-2xl font-cinzel font-bold bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text tracking-widest">ZODIAK</span>
-      </div>
-      {/* Onglets de navigation (desktop uniquement) */}
-      <div className="hidden md:block w-full mt-2">
-        <Tabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
+        
+        <nav className="hidden md:flex items-center gap-1">
+          {tabs.map((tab) => {
+            const isActive = getActiveTab() === tab.key;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => handleTabChange(tab.key)}
+                className={cn(
+                  'px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                  'text-gray-300 hover:text-white',
+                  isActive && 'text-[#F5CBA7] bg-[#F5CBA7]/10'
+                )}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </nav>
       </div>
     </header>
   );
-} 
+}
+
+export default Header; 

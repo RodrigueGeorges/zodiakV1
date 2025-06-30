@@ -5,7 +5,7 @@ interface FormattedGuidanceTextProps {
   className?: string;
 }
 
-export function FormattedGuidanceText({ text, className }: FormattedGuidanceTextProps) {
+function FormattedGuidanceText({ text, className }: FormattedGuidanceTextProps) {
   if (!text) return null;
   
   const parts = text.split(/(\*.*?\*)/g);
@@ -24,4 +24,6 @@ export function FormattedGuidanceText({ text, className }: FormattedGuidanceText
       })}
     </p>
   );
-} 
+}
+
+export default FormattedGuidanceText; 

@@ -168,3 +168,5 @@ export function AstrologyTest() {
     </div>
   );
 }
+
+export default AstrologyTest;

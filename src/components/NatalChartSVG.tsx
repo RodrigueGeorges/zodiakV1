@@ -136,4 +136,6 @@ export function NatalChartSVG({ natalChart }: NatalChartSVGProps) {
       )}
     </div>
   );
-} 
+}
+
+export default NatalChartSVG; 

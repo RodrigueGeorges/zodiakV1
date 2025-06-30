@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Zap, Clock, Database } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { PlaceAutocomplete } from './PlaceAutocomplete';
+import PlaceAutocomplete from './PlaceAutocomplete';
 import type { Place } from '../lib/places';
 
 export function PlaceSearchTest() {
@@ -120,4 +120,6 @@ export function PlaceSearchTest() {
       </div>
     </div>
   );
-} 
+}
+
+export default PlaceSearchTest; 
