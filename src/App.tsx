@@ -13,6 +13,10 @@ import { BrevoService } from './lib/services/BrevoService';
 import { ApiService } from './lib/api';
 import { PerformanceMonitor } from './lib/performance/PerformanceMonitor';
 import { Logger } from './lib/logging/Logger';
+import { MagicButtonX } from './components/MagicButtonX';
+if (typeof window !== 'undefined') {
+  window.__testMagicButton = MagicButtonX;
+}
 console.log('AstrologyService loaded:', AstrologyService);
 console.log('GuidanceService loaded:', GuidanceService);
 console.log('OpenAIService loaded:', OpenAIService);
@@ -45,7 +49,6 @@ import { useAuth } from './lib/hooks/useAuth.tsx';
 import { BottomNavBar } from './components/BottomNavBar';
 import { Header } from './components/Header';
 import Tabs from './components/Tabs';
-import { MagicButtonX } from './components/MagicButtonX';
 console.log('MagicButtonX loaded:', MagicButtonX);
 
 // Router component to encapsulate routing logic
