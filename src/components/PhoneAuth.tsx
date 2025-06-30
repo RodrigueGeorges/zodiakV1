@@ -3,7 +3,7 @@ import { Phone, Loader2 } from 'lucide-react';
 import { BrevoService } from '../lib/services/BrevoService';
 import { cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
-import { AnimatedButtonZ } from './AnimatedButtonZ';
+import AnimatedButtonZ from './AnimatedButtonZ';
 
 interface PhoneAuthProps {
   onSuccess?: (userId: string) => void;

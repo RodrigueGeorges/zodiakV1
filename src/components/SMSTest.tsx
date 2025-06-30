@@ -3,7 +3,7 @@ import { Send, AlertCircle, Loader2 } from 'lucide-react';
 import { SMSService } from '../lib/sms';
 import { cn } from '../lib/utils';
 import { DeliveryStatus } from './DeliveryStatus';
-import { AnimatedButtonZ } from './AnimatedButtonZ';
+import AnimatedButtonZ from './AnimatedButtonZ';
 
 export function SMSTest() {
   const [sending, setSending] = useState(false);
