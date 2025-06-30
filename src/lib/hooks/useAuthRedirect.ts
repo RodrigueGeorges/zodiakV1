@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthService } from '../auth';
+import { SuperAuthService } from '../auth';
 import { StorageService } from '../storage';
 
 export function useAuthRedirect() {
@@ -8,7 +8,7 @@ export function useAuthRedirect() {
 
   useEffect(() => {
     const checkAuthAndRedirect = async () => {
-      const currentUser = AuthService.getCurrentUser();
+      const currentUser = SuperAuthService.getCurrentUser();
       
       if (currentUser) {
         const profile = StorageService.getProfile(currentUser.id);

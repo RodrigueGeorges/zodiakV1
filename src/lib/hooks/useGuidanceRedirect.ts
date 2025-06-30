@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthService } from '../auth';
+import { SuperAuthService } from '../auth';
 import { StorageService } from '../storage';
 
 export function useGuidanceRedirect(userId: string | null) {
@@ -13,9 +13,9 @@ export function useGuidanceRedirect(userId: string | null) {
         return;
       }
 
-      const currentUser = await AuthService.getCurrentUser();
+      const currentUser = await SuperAuthService.getCurrentUser();
       if (!currentUser || currentUser.id !== userId) {
-        AuthService.signOut().then(() => {
+        SuperAuthService.signOut().then(() => {
           navigate('/', { replace: true });
         });
         return;

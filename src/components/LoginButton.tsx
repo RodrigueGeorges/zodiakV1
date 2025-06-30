@@ -5,7 +5,7 @@ import { cn } from '../lib/utils';
 import { InteractiveCard } from './InteractiveCard';
 import { PhoneAuth } from './PhoneAuth';
 import { useNavigate } from 'react-router-dom';
-import { AuthService } from '../lib/auth';
+import { SuperAuthService } from '../lib/auth';
 import { StorageService } from '../lib/storage';
 import { supabase } from '../lib/supabase';
 
@@ -28,7 +28,7 @@ export function LoginButton({ showToast }: LoginButtonProps) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const currentUser = AuthService.getCurrentUser();
+        const currentUser = SuperAuthService.getCurrentUser();
         setIsAuthenticated(!!currentUser);
       } catch (error) {
         console.error('Error checking auth status:', error);
@@ -39,7 +39,7 @@ export function LoginButton({ showToast }: LoginButtonProps) {
 
     checkAuth();
 
-    const unsubscribe = AuthService.subscribe((auth) => {
+    const unsubscribe = SuperAuthService.subscribe((auth) => {
       setIsAuthenticated(auth.isAuthenticated);
     });
 
@@ -85,7 +85,7 @@ export function LoginButton({ showToast }: LoginButtonProps) {
   const handleLogout = async () => {
     try {
       setIsLoading(true);
-      await AuthService.signOut();
+      await SuperAuthService.signOut();
       showToast('Déconnexion réussie', 'success');
       navigate('/', { replace: true });
     } catch (error) {

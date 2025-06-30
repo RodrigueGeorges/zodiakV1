@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { StorageService } from '../storage';
-import { AuthService } from '../auth';
+import { SuperAuthService } from '../auth';
 import type { Profile } from '../types/supabase';
 
 interface RegistrationData {

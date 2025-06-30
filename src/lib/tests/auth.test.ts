@@ -1,4 +1,4 @@
-import { AuthService } from '../auth';
+import { SuperAuthService } from '../auth';
 import { AuthWorkflowValidator } from '../validation/workflows/AuthWorkflowValidator';
 import { createSafeTimer } from '../utils';
 
@@ -55,10 +55,10 @@ describe('Auth System', () => {
       const phone = '0612345678';
       const code = '123456';
 
-      const sendResult = await AuthService.sendVerificationCode(phone);
+      const sendResult = await SuperAuthService.sendVerificationCode(phone);
       expect(sendResult.success).toBe(true);
 
-      const verifyResult = await AuthService.verifyCode(phone, code);
+      const verifyResult = await SuperAuthService.verifyCode(phone, code);
       expect(verifyResult.success).toBe(true);
       expect(verifyResult.session).toBeDefined();
     });

@@ -1,5 +1,5 @@
 import { WorkflowValidator } from '../WorkflowValidator';
-import { AuthService } from '../../auth';
+import { SuperAuthService } from '../../auth';
 import { StorageService } from '../../storage';
 import { validatePhone, validateCode, validateSession } from '../auth';
 
@@ -30,7 +30,7 @@ export class AuthWorkflowValidator {
         name: 'validateAuthService',
         validate: async () => {
           try {
-            const response = await AuthService.sendVerificationCode('0612345678');
+            const response = await SuperAuthService.sendVerificationCode('0612345678');
             return response.success;
           } catch {
             return false;

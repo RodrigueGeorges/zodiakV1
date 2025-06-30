@@ -6,7 +6,7 @@ import { UserListTest } from '../components/UserListTest';
 import { StarryBackground } from '../components/StarryBackground';
 import { Logo } from '../components/Logo';
 import { SMSService } from '../lib/sms';
-import { AuthService } from '../lib/auth';
+import { SuperAuthService } from '../lib/auth';
 import { StorageService } from '../lib/storage';
 import { cn } from '../lib/utils';
 import { InteractiveCard } from '../components/InteractiveCard';
@@ -49,7 +49,7 @@ export function Test() {
     try {
       // Test phone auth
       const phone = '0612345678';
-      const authResponse = await AuthService.signIn(phone);
+      const authResponse = await SuperAuthService.signIn(phone);
       
       if (!authResponse.success) {
         throw new Error(authResponse.error);

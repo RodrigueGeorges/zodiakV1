@@ -7,7 +7,7 @@ import './index.css'
 import { Toaster } from 'react-hot-toast'
 import { ErrorBoundary } from './lib/errors/ErrorBoundary'
 import { PerformanceMonitor } from './lib/performance/PerformanceMonitor'
-import { AuthService } from './lib/auth'
+import { SuperAuthService } from './lib/auth'
 import { initSentry } from './lib/sentry'
 import { AuthProvider } from './lib/hooks/useAuth'
 

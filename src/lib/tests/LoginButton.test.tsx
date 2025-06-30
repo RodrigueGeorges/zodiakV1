@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { LoginButton } from '../../components/LoginButton';
-import { AuthService } from '../auth';
+import { SuperAuthService } from '../auth';
 
 jest.mock('../auth');
 

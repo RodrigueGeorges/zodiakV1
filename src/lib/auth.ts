@@ -21,7 +21,7 @@ interface AuthState {
 
 type AuthSubscriber = (state: AuthState) => void;
 
-export class AuthService {
+export class SuperAuthService {
   private static subscribers: Set<AuthSubscriber> = new Set();
   private static initialized = false;
   private static readonly SESSION_KEY = 'auth_session';

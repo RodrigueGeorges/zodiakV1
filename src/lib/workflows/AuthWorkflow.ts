@@ -1,4 +1,4 @@
-import { AuthService } from '../auth';
+import { SuperAuthService } from '../auth';
 import { StorageService } from '../storage';
 import { ErrorMessages } from '../errors';
 import type { Profile } from '../types/supabase';
@@ -52,7 +52,7 @@ export class AuthWorkflow {
         throw new Error('Trop de tentatives. Veuillez réessayer plus tard.');
       }
 
-      const response = await AuthService.signIn(phone);
+      const response = await SuperAuthService.signIn(phone);
       
       if (!response.success) {
         const attempts = this.getAttempts();
@@ -75,11 +75,11 @@ export class AuthWorkflow {
 
   static async signOut(): Promise<void> {
     try {
-      const currentUser = AuthService.getCurrentUser();
+      const currentUser = SuperAuthService.getCurrentUser();
       if (currentUser?.id) {
         StorageService.clearUserData(currentUser.id);
       }
-      await AuthService.signOut();
+      await SuperAuthService.signOut();
       this.resetAttempts();
     } catch (error) {
       throw error;
