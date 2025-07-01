@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { User, CreditCard, Bell, LogOut, Edit2, Check, X, Clock, Send, Sun } from 'lucide-react';
-import { cn } from '../lib/utils';
 import type { Profile } from '../lib/types/supabase';
 import { useNavigate } from 'react-router-dom';
 import InteractiveCard from './InteractiveCard';
@@ -15,6 +13,16 @@ interface ProfileTabProps {
   onLogout: () => void;
 }
 
+interface Planet {
+  name: string;
+  sign: string;
+}
+
+interface NatalChart {
+  planets?: Planet[];
+  ascendant?: { sign: string };
+}
+
 function ProfileTab({ profile, onLogout }: ProfileTabProps) {
   const navigate = useNavigate();
   const { user, refreshProfile } = useAuth();
@@ -24,6 +32,11 @@ function ProfileTab({ profile, onLogout }: ProfileTabProps) {
   const [formData, setFormData] = useState({
     name: profile.name,
     phone: profile.phone,
+    birth_date: profile.birth_date,
+    birth_time: profile.birth_time,
+    birth_place: profile.birth_place,
+    guidance_sms_time: profile.guidance_sms_time,
+    daily_guidance_sms_enabled: profile.daily_guidance_sms_enabled || false,
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -128,12 +141,17 @@ function ProfileTab({ profile, onLogout }: ProfileTabProps) {
     try {
       if (!user) throw new Error('Non authentifié');
 
-      const { error: upsertError } = await supabase.from('profiles').upsert({
-        id: user.id,
+      const finalProfileData: Record<string, unknown> = {
         name: formData.name,
         phone: formData.phone,
-        updated_at: new Date().toISOString(),
-      });
+        birth_date: formData.birth_date,
+        birth_time: formData.birth_time,
+        birth_place: formData.birth_place,
+        guidance_sms_time: formData.guidance_sms_time,
+        daily_guidance_sms_enabled: formData.daily_guidance_sms_enabled
+      };
+
+      const { error: upsertError } = await supabase.from('profiles').upsert(finalProfileData);
 
       if (upsertError) throw upsertError;
 
@@ -155,9 +173,9 @@ function ProfileTab({ profile, onLogout }: ProfileTabProps) {
     (new Date(profile.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
   ));
 
-  const natalChart = profile.natal_chart as any;
-  const sunSign = natalChart?.planets?.find((p: any) => p.name === 'Soleil')?.sign || 'N/A';
-  const moonSign = natalChart?.planets?.find((p: any) => p.name === 'Lune')?.sign || 'N/A';
+  const natalChart = profile.natal_chart as NatalChart;
+  const sunSign = natalChart?.planets?.find((p: Planet) => p.name === 'Soleil')?.sign || 'N/A';
+  const moonSign = natalChart?.planets?.find((p: Planet) => p.name === 'Lune')?.sign || 'N/A';
   const ascendantSign = natalChart?.ascendant?.sign || 'N/A';
 
   return (

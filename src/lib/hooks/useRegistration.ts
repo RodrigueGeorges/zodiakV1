@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { StorageService } from '../storage';
-import { SuperAuthService } from '../auth';
 import type { Profile } from '../types/supabase';
 
 interface RegistrationData {
@@ -105,6 +104,24 @@ export function useRegistration() {
     return Object.keys(errors).length === 0;
   };
 
+  const updateRegistrationData = (updates: Partial<RegistrationData>) => {
+    setFormData(prev => ({ ...prev, ...updates }));
+  };
+
+  const saveProfile = async (profileData: Partial<Profile>): Promise<Profile | null> => {
+    try {
+      const profile = await StorageService.saveProfile(profileData as Profile);
+      return profile;
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      return null;
+    }
+  };
+
+  const updateStep = (step: number) => {
+    setFormData(prev => ({ ...prev, currentStep: step }));
+  };
+
   return {
     formData,
     loading,
@@ -116,6 +133,9 @@ export function useRegistration() {
     clearRegistration,
     setLoading,
     setError,
-    setSuccess
+    setSuccess,
+    updateRegistrationData,
+    saveProfile,
+    updateStep
   };
 }

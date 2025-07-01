@@ -48,9 +48,7 @@ export function useProfile(userId: string | null, options: UseProfileOptions = {
 
     const attemptLoad = async (attempt: number): Promise<void> => {
       try {
-        const startTime = performance.now();
         const userProfile = await StorageService.getProfile(userId);
-        const loadTime = performance.now() - startTime;
         
         // Mettre en cache
         if (enableCache && userProfile) {
@@ -104,19 +102,11 @@ export function useProfile(userId: string | null, options: UseProfileOptions = {
     loadProfile(true);
   }, [loadProfile]);
 
-  // Fonction pour invalider le cache
-  const invalidateCache = useCallback(() => {
-    if (userId) {
-      cache.invalidate(`profile-${userId}`);
-    }
-  }, [userId, cache]);
-
   return { 
     profile, 
     loading, 
     error, 
-    refreshProfile, 
-    invalidateCache,
+    refreshProfile,
     retryCount: retryCountRef.current 
   };
 }

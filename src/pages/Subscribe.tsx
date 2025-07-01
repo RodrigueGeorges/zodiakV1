@@ -1,6 +1,5 @@
 import { CreditCard, Shield, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { cn } from '../lib/utils';
 import StarryBackground from '../components/StarryBackground';
 import InteractiveCard from '../components/InteractiveCard';
 import Logo from '../components/Logo';

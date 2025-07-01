@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { GuidanceService } from '../services/GuidanceService';
+import GuidanceService from '../services/GuidanceService';
 
 export function useGuidanceScheduler() {
   const lastCheckRef = useRef(0);

@@ -2,8 +2,8 @@ import { DateTime } from 'luxon';
 import { AstrologyService } from '../astrology';
 import { SMSService } from '../sms';
 import { StorageService } from '../storage';
-import { OpenAIService } from './OpenAIService';
-import { TrialExpiryService } from './TrialExpiryService';
+import OpenAIService from './OpenAIService';
+import TrialExpiryService from './TrialExpiryService';
 import type { Profile } from '../types/supabase';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -38,11 +38,11 @@ class GuidanceService {
   static async generateAndSendGuidance(profile: Profile): Promise<void> {
     try {
       // Calculate daily transits
-      const transits = await AstrologyService.calculateDailyTransits();
+      const transits = await AstrologyService.calculateDailyTransits(DateTime.now().toISODate());
 
       // Generate guidance with OpenAI
       const guidance = await OpenAIService.generateGuidance(
-        profile.natal_chart,
+        profile.natal_chart as Record<string, unknown>,
         transits
       );
 
@@ -96,7 +96,7 @@ class GuidanceService {
       const today = now.toISODate();
 
       const profiles = await StorageService.getAllProfiles();
-      const filteredProfiles = profiles.filter((profile: any) =>
+      const filteredProfiles = profiles.filter((profile: Profile) =>
         profile.daily_guidance_sms_enabled &&
         profile.guidance_sms_time === currentHourMinute &&
         (!profile.last_guidance_sent || DateTime.fromISO(profile.last_guidance_sent).toISODate() !== today)

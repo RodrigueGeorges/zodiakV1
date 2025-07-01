@@ -4,7 +4,7 @@ import { SMSService } from '../sms';
 import type { Profile } from '../types/supabase';
 import { createSafeTimer } from '../utils';
 
-export class TrialExpiryService {
+class TrialExpiryService {
   private static readonly MORNING_NOTIFICATION_HOUR = 9;
   private static readonly EVENING_NOTIFICATION_HOUR = 18;
   private static readonly CACHE_KEY = 'trial_expiry_notifications';
@@ -110,3 +110,5 @@ Activez votre abonnement ici : ${this.APP_URL}/subscribe
     checkAndSendNotifications();
   }
 }
+
+export default TrialExpiryService;

@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
   const refreshProfile = async () => {
@@ -31,6 +32,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return userProfile;
     }
     return null;
+  };
+
+  const handleAuthStateChange = async (event: string, _session: AuthSession | null) => {
+    if (event === 'SIGNED_IN' && _session?.user) {
+      setUser(_session.user);
+      setIsAuthenticated(true);
+      await loadProfile(_session.user.id);
+    } else if (event === 'SIGNED_OUT') {
+      setUser(null);
+      setIsAuthenticated(false);
+      setProfile(null);
+      StorageService.clearProfile();
+    }
+    setIsLoading(false);
+  };
+
+  const loadProfile = async (userId: string) => {
+    const userProfile = await StorageService.getProfile(userId);
+    setProfile(userProfile);
   };
 
   useEffect(() => {
@@ -73,6 +93,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      handleAuthStateChange(event, session);
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESH_FAILED') {
         // Token invalide ou expiré
         navigate('/login', { replace: true });
@@ -94,7 +123,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     profile,
     isLoading,
     signOut,
-    isAuthenticated: !!session,
+    isAuthenticated,
     refreshProfile,
   };
 

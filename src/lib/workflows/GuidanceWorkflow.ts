@@ -4,9 +4,27 @@
 import { AstrologyService } from '../astrology';
 import { StorageService } from '../storage';
 import { SMSService } from '../sms';
-import { ErrorMessages } from '../errors';
-import type { Profile, DailyGuidance } from '../types/supabase';
+import type { Profile } from '../types/supabase';
 import { v4 as uuidv4 } from 'uuid';
+
+// Constantes d'erreur
+const ErrorMessages = {
+  PROFILE_NOT_FOUND: 'Profil utilisateur non trouvé',
+  UNAUTHORIZED: 'Accès non autorisé',
+  API_ERROR: 'Erreur lors de la génération de la guidance'
+};
+
+// Interface pour la guidance quotidienne
+interface DailyGuidance {
+  id: string;
+  user_id: string;
+  date: string;
+  summary: string;
+  work: string;
+  energy: string;
+  love: string;
+  created_at: string;
+}
 
 export class GuidanceWorkflow {
   private static readonly GUIDANCE_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 heures

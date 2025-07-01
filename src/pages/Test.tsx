@@ -1,16 +1,16 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import AstrologyTest from '../components/AstrologyTest';
 import SMSTest from '../components/SMSTest';
-import UserListTest from '../components/UserListTest';
-import StarryBackground from '../components/StarryBackground';
-import Logo from '../components/Logo';
 import { SMSService } from '../lib/sms';
-import { SuperAuthService } from '../lib/auth';
 import { StorageService } from '../lib/storage';
 import { cn } from '../lib/utils';
 import InteractiveCard from '../components/InteractiveCard';
 import PlaceSearchTest from '../components/PlaceSearchTest';
+import UserListTest from '../components/UserListTest';
+import StarryBackground from '../components/StarryBackground';
+import Logo from '../components/Logo';
+// import { SuperAuthService } from '../lib/auth';
 
 export function Test() {
   const [sending, setSending] = useState(false);
@@ -44,26 +44,14 @@ export function Test() {
     }
   };
 
-  const handleTestAuth = async () => {
-    setAuthResult(null);
+  const handleAuthTest = async () => {
+    setAuthResult('Testing...');
     try {
-      // Test phone auth
-      const phone = '0612345678';
-      const authResponse = await SuperAuthService.signIn(phone);
-      
-      if (!authResponse.success) {
-        throw new Error(authResponse.error);
-      }
-
-      setAuthResult({
-        success: true,
-        message: 'Authentification réussie'
-      });
+      // const authResponse = await SuperAuthService.signIn(phone);
+      // setAuthResult(JSON.stringify(authResponse, null, 2));
+      setAuthResult('SuperAuthService temporarily disabled');
     } catch (error) {
-      setAuthResult({
-        success: false,
-        message: error instanceof Error ? error.message : 'Erreur d\'authentification'
-      });
+      setAuthResult(`Error: ${error}`);
     }
   };
 
@@ -135,7 +123,7 @@ export function Test() {
             <InteractiveCard className="p-6">
               <h2 className="text-xl font-semibold mb-4 text-[#F5CBA7]">Test d'Authentification</h2>
               <button
-                onClick={handleTestAuth}
+                onClick={handleAuthTest}
                 className={cn(
                   'w-full py-3 px-4 rounded-lg',
                   'bg-gradient-to-r from-[#F5CBA7] to-[#D4A373]',

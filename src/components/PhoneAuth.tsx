@@ -1,8 +1,4 @@
 import React, { forwardRef, useState, useEffect } from 'react';
-import { Phone, Loader2 } from 'lucide-react';
-import { BrevoService } from '../lib/services/BrevoService';
-import { cn } from '../lib/utils';
-import { supabase } from '../lib/supabase';
 import { ButtonZodiak } from './ButtonZodiak';
 import { toast } from 'react-hot-toast';
 
@@ -27,13 +23,9 @@ const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function PhoneAut
   }, [countdown]);
 
   const formatPhoneNumber = (value: string) => {
-    // Supprimer tous les caractères non numériques
     const cleaned = value.replace(/\D/g, '');
-    
-    // Limiter à 10 chiffres
     const limited = cleaned.slice(0, 10);
     
-    // Formater en 06 XX XX XX XX
     if (limited.length === 0) return '';
     if (limited.length <= 2) return limited;
     if (limited.length <= 4) return `${limited.slice(0, 2)} ${limited.slice(2)}`;
@@ -50,6 +42,10 @@ const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function PhoneAut
   const validatePhone = (phone: string) => {
     const cleaned = phone.replace(/\D/g, '');
     return cleaned.length === 10 && cleaned.startsWith('06');
+  };
+
+  const generateCode = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
   };
 
   const sendVerificationCode = async () => {
@@ -89,11 +85,6 @@ const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function PhoneAut
     }
   };
 
-  const generateCode = () => {
-    // Générer un code à 6 chiffres
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  };
-
   const verifyCode = async () => {
     if (code.length !== 6) {
       toast.error('Veuillez entrer le code à 6 chiffres');
@@ -102,7 +93,6 @@ const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function PhoneAut
 
     setIsLoading(true);
     try {
-      // Simulation de vérification - en production, vérifier avec le serveur
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       const cleanedPhone = phone.replace(/\D/g, '');
@@ -190,4 +180,4 @@ const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function PhoneAut
   );
 });
 
-export default PhoneAuth;
+export default PhoneAuth; 

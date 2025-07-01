@@ -1,16 +1,14 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { User, Trash2, Shield, CreditCard, Calendar, Clock, Search } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
-import { StarryBackground } from '../components/StarryBackground';
-import { Logo } from '../components/Logo';
-import { InteractiveCard } from '../components/InteractiveCard';
+import StarryBackground from '../components/StarryBackground';
+import Logo from '../components/Logo';
+import InteractiveCard from '../components/InteractiveCard';
 import type { Profile } from '../lib/types/supabase';
+import { Shield, Search, User, CreditCard, Calendar, Clock } from 'lucide-react';
 
 export function Admin() {
-  const navigate = useNavigate();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -1,15 +1,12 @@
-import { motion } from 'framer-motion';
-import Logo from './Logo';
-import { cn } from '../lib/utils';
+import React from 'react';
 import CosmicLoader from './CosmicLoader';
 
 interface LoadingScreenProps {
   message?: string;
   error?: string;
-  onRetry?: () => void;
 }
 
-function LoadingScreen({ message = 'Chargement...', error, onRetry }: LoadingScreenProps) {
+function LoadingScreen({ message = 'Chargement...', error }: LoadingScreenProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-cosmic-900 text-white">
       <CosmicLoader />

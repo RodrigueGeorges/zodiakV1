@@ -3,7 +3,7 @@ import { StorageService } from '../storage';
 import type { Profile, DailyGuidance } from '../types/supabase';
 import { DateTime } from 'luxon';
 
-export class SupabaseOptimizationService {
+class SupabaseOptimizationService {
   private static readonly CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 heures
   private static readonly BATCH_SIZE = 10; // Nombre d'éléments par batch
 
@@ -248,4 +248,6 @@ export class SupabaseOptimizationService {
       apiCalls: 0
     };
   }
-} 
+}
+
+export default SupabaseOptimizationService; 

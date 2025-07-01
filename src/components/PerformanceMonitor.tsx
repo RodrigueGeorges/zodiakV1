@@ -11,8 +11,8 @@ interface PerformanceMonitorProps {
 
 export function PerformanceMonitor({ className, showDetails = false }: PerformanceMonitorProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const [metrics, setMetrics] = useState<any[]>([]);
-  const { getMetrics, getAverageDuration } = usePerformance({ enableLogging: false });
+  const [metrics, setMetrics] = useState<Record<string, number>[]>([]);
+  const { getMetrics } = usePerformance({ enableLogging: false });
 
   useEffect(() => {
     const interval = setInterval(() => {

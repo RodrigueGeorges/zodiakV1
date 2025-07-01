@@ -59,9 +59,7 @@ export class StorageService {
       console.log('💾 Sauvegarde du profil dans Supabase...');
       const { error } = await supabase
         .from('profiles')
-        .upsert(profile, {
-          onConflict: 'id'
-        });
+        .upsert(profile as Record<string, unknown>);
 
       if (error) throw error;
 
@@ -175,15 +173,15 @@ export class StorageService {
   }
 
   // === FORM DATA (localStorage only) ===
-  static saveFormData(data: any): void {
+  static saveFormData(data: Record<string, unknown>): void {
     try {
-      localStorage.setItem(this.FORM_DATA_KEY, JSON.stringify(data));
+      localStorage.setItem('formData', JSON.stringify(data));
     } catch (error) {
-      console.warn('Error saving form data:', error);
+      console.error('Error saving form data:', error);
     }
   }
 
-  static getFormData(): any {
+  static getFormData(): Record<string, unknown> | null {
     try {
       const data = localStorage.getItem(this.FORM_DATA_KEY);
       return data ? JSON.parse(data) : null;

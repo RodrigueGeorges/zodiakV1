@@ -1,4 +1,11 @@
 import { DateTime } from 'luxon';
+import { ApiError } from './errors';
+
+interface RequestConfig {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string;
+}
 
 const API_URL = import.meta.env.VITE_ASTRO_API_URL;
 const CLIENT_ID = import.meta.env.VITE_ASTRO_CLIENT_ID;
@@ -58,13 +65,13 @@ interface UserData {
 }
 
 export class ApiService {
-  private static cache = new Map<string, { data: any; timestamp: number }>();
+  private static cache = new Map<string, { data: unknown; timestamp: number }>();
   private static CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
   private static USE_MOCK = true; // Utiliser les données de test
 
   private static async fetchWithRetry<T>(
     endpoint: string,
-    data: any,
+    data: Record<string, unknown>,
     retries = 3
   ): Promise<ApiResponse<T>> {
     if (this.USE_MOCK) {
@@ -117,14 +124,14 @@ export class ApiService {
     }
   }
 
-  private static getCacheKey(endpoint: string, data: any): string {
+  private static getCacheKey(endpoint: string, data: Record<string, unknown>): string {
     return `${endpoint}:${JSON.stringify(data)}`;
   }
 
   private static getFromCache<T>(key: string): T | null {
     const cached = this.cache.get(key);
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-      return cached.data;
+      return cached.data as T;
     }
     this.cache.delete(key);
     return null;
@@ -138,7 +145,7 @@ export class ApiService {
   }
 
   static async fetchNatalChart(userData: UserData) {
-    const cacheKey = this.getCacheKey('/natal-chart', userData);
+    const cacheKey = this.getCacheKey('/natal-chart', userData as Record<string, unknown>);
     const cached = this.getFromCache(cacheKey);
     if (cached) return { success: true, data: cached };
 
@@ -154,7 +161,7 @@ export class ApiService {
     return response;
   }
 
-  static async fetchDailyGuidance(userId: string, natalData: any) {
+  static async fetchDailyGuidance(userId: string, natalData: Record<string, unknown>) {
     const today = DateTime.now().setZone('Europe/Paris').toISODate();
     const cacheKey = this.getCacheKey(`/guidance/${userId}`, { date: today });
     const cached = this.getFromCache(cacheKey);
@@ -175,5 +182,24 @@ export class ApiService {
 
   static clearCache(): void {
     this.cache.clear();
+  }
+
+  private static async handleResponse<T>(response: Response): Promise<T> {
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new ApiError(
+        errorData?.message || `HTTP ${response.status}`,
+        response.status
+      );
+    }
+    return response.json();
+  }
+
+  static async get<T>(url: string, config?: RequestConfig): Promise<T> {
+    const response = await this.request(url, {
+      method: 'GET',
+      ...config
+    });
+    return this.handleResponse<T>(response);
   }
 }

@@ -1,12 +1,12 @@
+import React, { useState, useEffect } from 'react';
 import { Sun, Moon, Sparkle, Star, Heart, MessageSquare } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import type { Profile } from '../lib/types/supabase';
+import type { Profile, NatalChart } from '../lib/types/supabase';
 import InteractiveCard from './InteractiveCard';
-import { OpenAIService } from '../lib/services/OpenAIService';
+import OpenAIService from '../lib/services/OpenAIService';
 import { StorageService } from '../lib/storage';
 import CosmicLoader from './CosmicLoader';
 import NatalSignature from './NatalSignature';
-import { toast } from 'react-hot-toast';
+import type { JSX } from 'react';
 
 interface NatalChartTabProps {
   profile: Profile;
@@ -16,26 +16,21 @@ function NatalChartTab({ profile }: NatalChartTabProps) {
   const [interpretation, setInterpretation] = useState<string | null>(profile.natal_chart_interpretation || null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showInterpretation, setShowInterpretation] = useState(false);
   const [astroSummary, setAstroSummary] = useState<string | null>(profile.natal_summary || null);
-  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
 
-  const natalChart = profile.natal_chart as any;
+  const natalChart = profile.natal_chart as NatalChart;
   const firstName = profile.name ? profile.name.split(' ')[0] : '';
 
   // Extraction des données principales
-  const sunSign = natalChart?.planets?.find((p: any) => p.name === 'Soleil')?.sign || 'N/A';
-  const moonSign = natalChart?.planets?.find((p: any) => p.name === 'Lune')?.sign || 'N/A';
+  const sunSign = natalChart?.planets?.find((p: { name: string; sign: string }) => p.name === 'Soleil')?.sign || 'N/A';
+  const moonSign = natalChart?.planets?.find((p: { name: string; sign: string }) => p.name === 'Lune')?.sign || 'N/A';
   const ascendantSign = natalChart?.ascendant?.sign || 'N/A';
-  const mercurySign = natalChart?.planets?.find((p: any) => p.name === 'Mercure')?.sign || 'N/A';
-  const venusSign = natalChart?.planets?.find((p: any) => p.name === 'Vénus')?.sign || 'N/A';
-  const marsSign = natalChart?.planets?.find((p: any) => p.name === 'Mars')?.sign || 'N/A';
 
   // On charge d'abord le résumé depuis Supabase si présent
   useEffect(() => {
     const generateSummary = async () => {
       if (!natalChart || astroSummary) return;
-      setIsLoadingSummary(true);
+      setIsLoading(true);
       try {
         const summary = await OpenAIService.generateNatalSummary(natalChart, firstName);
         setAstroSummary(summary);
@@ -46,7 +41,7 @@ function NatalChartTab({ profile }: NatalChartTabProps) {
         console.error('Erreur lors de la génération du résumé:', err);
         setAstroSummary(`${firstName}, votre signature astrale révèle un Soleil en ${sunSign}, une Lune en ${moonSign} et un Ascendant en ${ascendantSign}. Cette combinaison unique façonne votre personnalité et votre façon d'aborder la vie.`);
       } finally {
-        setIsLoadingSummary(false);
+        setIsLoading(false);
       }
     };
     generateSummary();
@@ -217,7 +212,7 @@ function NatalChartTab({ profile }: NatalChartTabProps) {
 
       {/* Grille des planètes */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {allPlanets.map((planet, index) => (
+        {allPlanets.map((planet) => (
           <InteractiveCard
             key={planet.name}
             className={`bg-gradient-to-br ${planetBgMap[planet.name]} ${planetBorderMap[planet.name]} p-4`}
@@ -267,7 +262,26 @@ function NatalChartTab({ profile }: NatalChartTabProps) {
               Découvrez une interprétation approfondie de votre thème natal, générée spécialement pour vous.
             </p>
             <button
-              onClick={() => setShowInterpretation(true)}
+              onClick={() => {
+                // Déclencher la génération de l'interprétation
+                const generateInterpretation = async () => {
+                  if (!natalChart || interpretation) return;
+                  
+                  setIsLoading(true);
+                  setError(null);
+                  
+                  try {
+                    const generatedText = await OpenAIService.generateNatalChartInterpretation(natalChart);
+                    setInterpretation(generatedText);
+                  } catch (err) {
+                    setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+                  } finally {
+                    setIsLoading(false);
+                  }
+                };
+                
+                generateInterpretation();
+              }}
               className="px-6 py-3 bg-gradient-to-r from-primary to-secondary text-black font-semibold rounded-lg hover:opacity-90 transition-all duration-200 shadow-lg"
             >
               Générer l'interprétation

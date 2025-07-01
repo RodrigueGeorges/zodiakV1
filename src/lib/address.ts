@@ -1,4 +1,5 @@
-import { debounce } from './utils';
+// Service pour la gestion des adresses
+// Utilise l'API adresse.data.gouv.fr pour la recherche et la géocodification
 
 interface AddressFeature {
   type: string;

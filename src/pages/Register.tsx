@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InteractiveCard from '../components/InteractiveCard';
 import PhoneAuth from '../components/PhoneAuth';

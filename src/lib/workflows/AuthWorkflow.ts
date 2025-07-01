@@ -74,15 +74,16 @@ export class AuthWorkflow {
   }
 
   static async signOut(): Promise<void> {
-    try {
-      const currentUser = SuperAuthService.getCurrentUser();
-      if (currentUser?.id) {
-        StorageService.clearUserData(currentUser.id);
-      }
-      await SuperAuthService.signOut();
-      this.resetAttempts();
-    } catch (error) {
-      throw error;
+    const currentUser = SuperAuthService.getCurrentUser();
+    if (currentUser?.id) {
+      StorageService.clearUserData(currentUser.id);
     }
+    await SuperAuthService.signOut();
+    this.resetAttempts();
+  }
+
+  static async validateUser(userId: string): Promise<boolean> {
+    const profile = await StorageService.getProfile(userId);
+    return profile !== null;
   }
 }

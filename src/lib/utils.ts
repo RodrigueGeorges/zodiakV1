@@ -59,7 +59,7 @@ export function formatPhoneNumberForVonage(phone: string): string {
 }
 
 export function createSafeTimer(callback: () => void, interval: number) {
-  let timerId: NodeJS.Timeout | null = null;
+  let timerId: number | null = null;
   let isActive = false;
 
   const cleanup = () => {

@@ -1,6 +1,5 @@
-import { AstrologyService } from '../astrology';
-import type { NatalChart } from '../astrology';
 import { ApiError } from '../errors';
+import type { NatalChart } from '../astrology';
 
 interface OpenAIConfig {
   apiKey: string;
@@ -8,11 +7,11 @@ interface OpenAIConfig {
   maxTokens: number;
 }
 
-export class OpenAIService {
+class OpenAIService {
   private static readonly CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
-  private static readonly CACHE = new Map<string, any>();
+  private static readonly CACHE = new Map<string, { data: unknown; timestamp: number }>();
   private static readonly config: OpenAIConfig = {
-    apiKey: process.env.OPENAI_API_KEY as string,
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY as string,
     model: 'gpt-4',
     maxTokens: 1000
   };
@@ -27,7 +26,7 @@ export class OpenAIService {
   private static getFromCache<T>(key: string): T | null {
     const cached = this.CACHE.get(key);
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-      return cached.data;
+      return cached.data as T;
     }
     this.CACHE.delete(key);
     return null;
@@ -82,7 +81,7 @@ export class OpenAIService {
     }
   }
 
-  static async generateGuidance(natalChart: NatalChart, transits: any) {
+  static async generateGuidance(natalChart: NatalChart, transits: Record<string, unknown>) {
     try {
       // Check cache first
       const cacheKey = `guidance_${JSON.stringify(natalChart)}_${JSON.stringify(transits)}`;
@@ -106,7 +105,7 @@ export class OpenAIService {
     }
   }
 
-  private static buildPrompt(natalChart: NatalChart, transits: any): string {
+  private static buildPrompt(natalChart: NatalChart, transits: Record<string, unknown>): string {
     return `
       Analyse les positions planétaires suivantes et génère une guidance quotidienne au format JSON.
       - summary: un résumé général de 2-3 phrases de l'énergie du jour.
@@ -206,11 +205,11 @@ export class OpenAIService {
       const cacheKey = `summary_${firstName}_${JSON.stringify(natalChart)}`;
       const cached = this.getFromCache<string>(cacheKey);
       if (cached) {
-        console.log('Returning cached natal summary');
+        console.log('Returning cached summary');
         return cached;
       }
       
-      console.log('Generating new natal summary');
+      console.log('Generating new summary');
       const prompt = this.buildNatalSummaryPrompt(natalChart, firstName);
       const summary = await this.callOpenAI(prompt);
       
@@ -218,12 +217,10 @@ export class OpenAIService {
       return summary;
 
     } catch (error) {
-      console.error('Erreur lors de la génération du résumé natal:', error);
-      // Fallback vers un résumé basique
-      const sunSign = natalChart?.planets?.find((p: any) => p.name === 'Soleil')?.sign || 'N/A';
-      const moonSign = natalChart?.planets?.find((p: any) => p.name === 'Lune')?.sign || 'N/A';
-      const ascendantSign = natalChart?.ascendant?.sign || 'N/A';
-      return `${firstName}, votre signature astrale révèle un Soleil en ${sunSign}, une Lune en ${moonSign} et un Ascendant en ${ascendantSign}. Cette combinaison unique façonne votre personnalité et votre façon d'aborder la vie.`;
+      console.error('Erreur lors de la génération du résumé astrologique:', error);
+      throw error instanceof ApiError ? error : new ApiError('Erreur interne du serveur', 500);
     }
   }
 }
+
+export default OpenAIService;

@@ -11,6 +11,7 @@ import PlaceAutocomplete from '../components/PlaceAutocomplete';
 import LoadingScreen from '../components/LoadingScreen';
 import { DESIGN_TOKENS } from '../lib/constants/design';
 import { AstrologyService } from '../lib/astrology';
+import type { Place } from '../lib/types/supabase';
 
 // Animations pour les transitions
 const pageVariants = {
@@ -88,7 +89,7 @@ export function Profile() {
             location: `${selectedPlace._geoloc.lat},${selectedPlace._geoloc.lng}`,
           };
           const natalChart = await AstrologyService.calculateNatalChart(birthData);
-          (finalProfileData as any).natal_chart = natalChart;
+          (finalProfileData as Record<string, unknown>).natal_chart = natalChart;
         } catch (chartError) {
           console.error("Erreur de calcul du thème natal:", chartError);
           setError("Impossible de calculer le thème natal. Vérifiez les données de naissance.");

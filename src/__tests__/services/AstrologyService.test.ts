@@ -1,8 +1,16 @@
-import { AstrologyService, type BirthData } from '../../lib/astrology';
-import { DateTime } from 'luxon';
+import { describe, it, expect, vi } from 'vitest';
+import { AstrologyService } from '../../lib/services/AstrologyService';
+
+// Mock des dépendances
+vi.mock('../../lib/api', () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn()
+  }
+}));
 
 describe('AstrologyService', () => {
-  const mockBirthData: BirthData = {
+  const mockBirthData = {
     date_of_birth: '1990-01-01',
     time_of_birth: '12:00',
     location: '48.8566,2.3522'
@@ -61,7 +69,6 @@ describe('AstrologyService', () => {
 
     it('should cache guidance for the same day', async () => {
       const userId = 'test-user';
-      const today = DateTime.now().toISODate();
       
       // Premier appel
       const guidance1 = await AstrologyService.generateDailyGuidance(userId, mockNatalChart);

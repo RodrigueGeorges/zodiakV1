@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Search, Loader2, MapPin, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
@@ -22,8 +22,7 @@ export function PlaceAutocomplete({
   const [query, setQuery] = useState(value);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const [isFromCache, setIsFromCache] = useState(false);
-  const { places, loading, error, clearCache } = usePlaceSearch(query, 300);
+  const { places, loading, error } = usePlaceSearch(query, 300);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -36,14 +35,6 @@ export function PlaceAutocomplete({
       });
     }
   }, [loading, error, selectedPlace, onStatusChange]);
-
-  // Détecter si les résultats viennent du cache
-  useEffect(() => {
-    if (places.length > 0 && !loading) {
-      // Simuler la détection du cache (en réalité, on pourrait ajouter un flag dans le hook)
-      setIsFromCache(false);
-    }
-  }, [places, loading]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

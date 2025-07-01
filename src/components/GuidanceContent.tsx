@@ -1,60 +1,33 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Briefcase, Battery, Sparkle } from 'lucide-react';
-import { cn } from '../lib/utils';
-import InteractiveCard from './InteractiveCard';
-import ProfileTab from './ProfileTab';
+import React, { useState, useEffect } from 'react';
+import { Heart, Briefcase, Battery } from 'lucide-react';
+import { DateTime } from 'luxon';
+import { toast } from 'react-hot-toast';
+import { useAuth } from '../lib/hooks/useAuth';
 import { useGuidance } from '../lib/hooks/useGuidance';
 import LoadingScreen from './LoadingScreen';
-import { useAuth } from '../lib/hooks/useAuth';
-import { useNavigate, useLocation } from 'react-router-dom';
+import InteractiveCard from './InteractiveCard';
 import FormattedGuidanceText from './FormattedGuidanceText';
-import { DateTime } from 'luxon';
-import { ShareModal } from './ShareModal';
-import GuidanceMeter from './GuidanceMeter';
-import type { Profile, Json } from '../lib/types/supabase';
-import { toast } from 'react-hot-toast';
+import ShareModal from './ShareModal';
+import { cn } from '../lib/utils';
+import type { Json } from '../lib/types/supabase';
+import type { JSX } from 'react';
 
 const getGuidanceText = (field: Json): string => {
   if (typeof field === 'string') {
     return field;
   }
-  if (typeof field === 'object' && field !== null && 'text' in field && typeof (field as any).text === 'string') {
-    return (field as any).text;
+  if (typeof field === 'object' && field !== null && 'text' in field && typeof (field as { text: string }).text === 'string') {
+    return (field as { text: string }).text;
   }
   return '';
 };
 
 const getGuidanceScore = (field: Json): number => {
-  if (typeof field === 'object' && field !== null && 'score' in field && typeof (field as any).score === 'number') {
-    return (field as any).score;
+  if (typeof field === 'object' && field !== null && 'score' in field && typeof (field as { score: number }).score === 'number') {
+    return (field as { score: number }).score;
   }
   return 75; // Score par défaut
 };
-
-interface GuidanceContentProps {
-  profile: Profile;
-}
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.1,
-      duration: 0.5,
-      ease: 'easeOut'
-    }
-  })
-};
-
-// Icône Facebook SVG inline
-const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" width={24} height={24} {...props}>
-    <path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.408.595 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.406 24 24 23.408 24 22.674V1.326C24 .592 23.406 0 22.675 0" />
-  </svg>
-);
 
 // Mantras/citations inspirantes (peuvent être enrichis)
 const MANTRAS = [
@@ -68,14 +41,12 @@ function getRandomMantra() {
   return MANTRAS[Math.floor(Math.random() * MANTRAS.length)];
 }
 
-function GuidanceContent({ profile }: GuidanceContentProps) {
-  const navigate = useNavigate();
-  const location = useLocation();
+function GuidanceContent(): JSX.Element {
   const { user } = useAuth();
   const [showShareModal, setShowShareModal] = useState(false);
 
   // Utiliser le nouveau hook optimisé
-  const { guidance, loading, error, generateGuidance, refreshGuidance } = useGuidance();
+  const { guidance, loading, generateGuidance, refreshGuidance } = useGuidance();
 
   const today = DateTime.now().toISODate();
 
@@ -85,19 +56,6 @@ function GuidanceContent({ profile }: GuidanceContentProps) {
       generateGuidance();
     }
   }, [loading, guidance, user?.id, generateGuidance]);
-
-  const handleGenerateGuidance = async () => {
-    if (!user?.id) {
-      toast.error('Vous devez être connecté pour générer une guidance');
-      return;
-    }
-
-    try {
-      await generateGuidance();
-    } catch (error) {
-      console.error('Erreur lors de la génération:', error);
-    }
-  };
 
   const handleRefreshGuidance = async () => {
     if (!user?.id) {
@@ -221,7 +179,6 @@ function GuidanceContent({ profile }: GuidanceContentProps) {
         {/* Mantra du jour */}
         <InteractiveCard className="bg-gradient-to-br from-yellow-900/30 to-orange-900/20 border-yellow-500/20">
           <div className="flex items-start gap-3">
-            <Sparkle className="w-6 h-6 text-yellow-400 flex-shrink-0 mt-1" />
             <div className="flex-1">
               <h3 className="font-semibold text-white mb-2 font-cinzel">Mantra du Jour</h3>
               <p className="text-gray-300 italic">"{getRandomMantra()}"</p>
@@ -234,7 +191,7 @@ function GuidanceContent({ profile }: GuidanceContentProps) {
             isOpen={showShareModal}
             onClose={() => setShowShareModal(false)}
             guidance={getGuidanceText(guidance.summary)}
-            userName={profile?.name || 'Utilisateur'}
+            userName={user?.name || 'Utilisateur'}
           />
         )}
       </div>

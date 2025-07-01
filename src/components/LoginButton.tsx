@@ -3,14 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LogIn, X, Loader2, User } from 'lucide-react';
 import { cn } from '../lib/utils';
 import InteractiveCard from './InteractiveCard';
-import Toast from './Toast';
-import { useAuth } from '../lib/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { SuperAuthService } from '../lib/auth';
 import { StorageService } from '../lib/storage';
 import { supabase } from '../lib/supabase';
 import { ButtonZodiak } from './ButtonZodiak';
 import PhoneAuth from './PhoneAuth';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LoginButtonProps {
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
@@ -26,8 +24,8 @@ function LoginButton({
   size = 'md'
 }: LoginButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const [authMode, setAuthMode] = useState<'sms' | 'email'>('sms');
@@ -35,61 +33,29 @@ function LoginButton({
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isSignUp, setIsSignUp] = useState(false);
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const currentUser = SuperAuthService.getCurrentUser();
-        setIsAuthenticated(!!currentUser);
-      } catch (error) {
-        console.error('Error checking auth status:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-
-    const unsubscribe = SuperAuthService.subscribe((auth) => {
-      setIsAuthenticated(auth.isAuthenticated);
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isOpen]);
 
   useEffect(() => {
     // Vérifier l'état de connexion actuel
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      await supabase.auth.getUser();
     };
     
     checkUser();
 
     // Écouter les changements d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user ?? null);
-        
-        if (event === 'SIGNED_IN') {
-          showToast('Connexion réussie !', 'success');
-        } else if (event === 'SIGNED_OUT') {
-          showToast('Déconnexion réussie', 'success');
-        }
+      async () => {
       }
     );
 
     return () => subscription.unsubscribe();
   }, [showToast]);
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
 
   const handleSuccess = async (userId: string) => {
     try {

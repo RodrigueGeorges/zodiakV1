@@ -1,20 +1,21 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TrialExpiryService } from '../services/TrialExpiryService';
 import { StorageService } from '../storage';
 import { SMSService } from '../sms';
 import { DateTime } from 'luxon';
 
-jest.mock('../storage');
-jest.mock('../sms');
+vi.mock('../storage');
+vi.mock('../sms');
 
 describe('TrialExpiryService', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     localStorage.clear();
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   const mockProfile = {
@@ -35,15 +36,15 @@ describe('TrialExpiryService', () => {
     // Mock current time to 9 AM
     const mockDate = new Date();
     mockDate.setHours(9, 0, 0, 0);
-    jest.setSystemTime(mockDate);
+    vi.setSystemTime(mockDate);
 
-    (StorageService.getAllProfiles as jest.Mock).mockReturnValue([mockProfile]);
-    (SMSService.sendSMS as jest.Mock).mockResolvedValue({ success: true });
+    (StorageService.getAllProfiles as any).mockReturnValue([mockProfile]);
+    (SMSService.sendSMS as any).mockResolvedValue({ success: true });
 
     TrialExpiryService.startExpiryNotifications();
 
     // Avancer le temps d'une heure
-    jest.advanceTimersByTime(60 * 60 * 1000);
+    vi.advanceTimersByTime(60 * 60 * 1000);
 
     expect(SMSService.sendSMS).toHaveBeenCalledWith(expect.objectContaining({
       to: mockProfile.phone,
@@ -55,15 +56,15 @@ describe('TrialExpiryService', () => {
     // Mock current time to 6 PM
     const mockDate = new Date();
     mockDate.setHours(18, 0, 0, 0);
-    jest.setSystemTime(mockDate);
+    vi.setSystemTime(mockDate);
 
-    (StorageService.getAllProfiles as jest.Mock).mockReturnValue([mockProfile]);
-    (SMSService.sendSMS as jest.Mock).mockResolvedValue({ success: true });
+    (StorageService.getAllProfiles as any).mockReturnValue([mockProfile]);
+    (SMSService.sendSMS as any).mockResolvedValue({ success: true });
 
     TrialExpiryService.startExpiryNotifications();
 
     // Avancer le temps d'une heure
-    jest.advanceTimersByTime(60 * 60 * 1000);
+    vi.advanceTimersByTime(60 * 60 * 1000);
 
     expect(SMSService.sendSMS).toHaveBeenCalledWith(expect.objectContaining({
       to: mockProfile.phone,
@@ -77,12 +78,12 @@ describe('TrialExpiryService', () => {
       subscription_status: 'active'
     };
 
-    (StorageService.getAllProfiles as jest.Mock).mockReturnValue([activeProfile]);
+    (StorageService.getAllProfiles as any).mockReturnValue([activeProfile]);
 
     TrialExpiryService.startExpiryNotifications();
 
     // Avancer le temps d'une journée
-    jest.advanceTimersByTime(24 * 60 * 60 * 1000);
+    vi.advanceTimersByTime(24 * 60 * 60 * 1000);
 
     expect(SMSService.sendSMS).not.toHaveBeenCalled();
   });

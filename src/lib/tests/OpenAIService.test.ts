@@ -1,4 +1,5 @@
-import { OpenAIService } from '../services/OpenAIService';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import OpenAIService from '../services/OpenAIService';
 import { NatalChart } from '../astrology';
 
 describe('OpenAIService', () => {
@@ -20,7 +21,7 @@ describe('OpenAIService', () => {
   };
 
   beforeEach(() => {
-    global.fetch = jest.fn();
+    window.fetch = vi.fn();
   });
 
   it('should generate guidance successfully', async () => {
@@ -35,7 +36,7 @@ describe('OpenAIService', () => {
       }]
     };
 
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (window.fetch as any).mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve(mockResponse)
     });
@@ -51,7 +52,7 @@ describe('OpenAIService', () => {
   });
 
   it('should handle API errors gracefully', async () => {
-    (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('API Error'));
+    (window.fetch as any).mockRejectedValueOnce(new Error('API Error'));
 
     await expect(OpenAIService.generateGuidance(mockNatalChart, mockTransits))
       .rejects.toThrow('Erreur lors de la génération de la guidance');

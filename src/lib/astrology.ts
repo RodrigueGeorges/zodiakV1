@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { OpenAIService } from './services/OpenAIService';
+import OpenAIService from './services/OpenAIService';
 import { ApiError } from './errors';
 import { z } from 'zod';
 
@@ -137,23 +137,40 @@ export class AstrologyService {
     return response.json();
   }
 
-  private static transformNatalChart(data: any): NatalChart {
+  private static transformNatalChart(data: Record<string, unknown>): NatalChart {
+    const planetsData = data.planets as Array<{
+      name: string;
+      longitude: number;
+      house: number;
+      sign: string;
+      is_retrograde: string;
+    }>;
+    const housesData = data.houses as Array<{
+      house_number: number;
+      sign: string;
+      degree: number;
+    }>;
+    const ascendantData = data.ascendant as {
+      sign: string;
+      degree: number;
+    };
+
     return {
-      planets: data.planets.map((p: any) => ({
+      planets: planetsData.map((p) => ({
         name: p.name,
         longitude: p.longitude,
         house: p.house,
         sign: p.sign,
         retrograde: p.is_retrograde === 'true',
       })),
-      houses: data.houses.map((h: any) => ({
+      houses: housesData.map((h) => ({
         number: h.house_number,
         sign: h.sign,
         degree: h.degree,
       })),
       ascendant: {
-        sign: data.ascendant.sign,
-        degree: data.ascendant.degree,
+        sign: ascendantData.sign,
+        degree: ascendantData.degree,
       },
     };
   }
@@ -243,7 +260,6 @@ export class AstrologyService {
     try {
       const validatedData = BirthDataSchema.parse(birthData);
       const { latitude, longitude } = this.parseLocation(validatedData.location);
-      const datetime = this.formatDateTime(validatedData.date_of_birth, validatedData.time_of_birth);
       
       const cacheKey = `natal_${validatedData.date_of_birth}_${validatedData.time_of_birth}_${Math.round(latitude * 10000).toString()}_${Math.round(longitude * 10000).toString()}`;
       return this.getFromCache<NatalChart>(cacheKey);
@@ -275,7 +291,7 @@ export class AstrologyService {
     }
   }
 
-  static async calculateDailyTransits(date: string): Promise<any> {
+  static async calculateDailyTransits(date: string): Promise<Record<string, unknown>> {
     // Simuler le calcul des transits pour une date donnée
     // TODO: Implémenter un vrai calcul de transits si nécessaire
     return {

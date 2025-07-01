@@ -2,10 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './useAuth';
 import { StorageService } from '../storage';
 import { AstrologyService } from '../astrology';
-import { OpenAIService } from '../services/OpenAIService';
+import OpenAIService from '../services/OpenAIService';
 import { DateTime } from 'luxon';
 import { toast } from 'react-hot-toast';
-import type { DailyGuidance } from '../types/supabase';
+import type { DailyGuidance, NatalChart } from '../types/supabase';
 
 interface GuidanceData {
   summary: string;
@@ -94,7 +94,7 @@ export function useGuidance(): UseGuidanceReturn {
       
       // Générer la guidance avec OpenAI
       const guidanceData = await OpenAIService.generateGuidance(
-        profile.natal_chart as any,
+        profile.natal_chart as NatalChart,
         transits
       );
 

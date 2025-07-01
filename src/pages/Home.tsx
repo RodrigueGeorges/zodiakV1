@@ -1,6 +1,7 @@
+import React from 'react';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Star, Sparkle, Moon, Sun, Compass, Clock, ArrowRight } from 'lucide-react';
+import { Sparkle, Moon, Sun, Compass, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
 import PhoneAuth from '../components/PhoneAuth';

@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState, useEffect } from 'react';
 import { useDebounce } from './hooks/useDebounce';
 
 export interface Place {
@@ -21,14 +20,6 @@ export interface Place {
   lon?: string;
 }
 
-function normalize(str: string): string {
-  return str
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]/g, '');
-}
-
 export function formatPlace(place: Place): string {
   const cityName = place.locale_names.fr?.[0] || place.city.fr?.[0] || place.locale_names.default?.[0];
   const admin = place.administrative[0];
@@ -38,6 +29,25 @@ export function formatPlace(place: Place): string {
   }
   
   return cityName || place.display_name || 'Lieu inconnu';
+}
+
+interface NominatimPlace {
+  place_id: number;
+  address: {
+    city?: string;
+    town?: string;
+    village?: string;
+    state?: string;
+    country: string;
+    country_code: string;
+    postcode?: string;
+  };
+  name: string;
+  population?: number;
+  lat: string;
+  lon: string;
+  importance: number;
+  display_name: string;
 }
 
 const fetchPlaces = async (query: string): Promise<Place[]> => {
@@ -56,7 +66,7 @@ const fetchPlaces = async (query: string): Promise<Place[]> => {
   }
 
   // Map Nominatim response to our Place interface
-  return data.map((item: any) => ({
+  return data.map((item: NominatimPlace) => ({
     objectID: item.place_id.toString(),
     place_id: item.place_id,
     locale_names: { fr: [item.address.city || item.address.town || item.address.village || item.name] },
@@ -84,8 +94,6 @@ export function usePlaceSearch(query: string, delay = 300) {
     data: places = [],
     isLoading: loading,
     error,
-    refetch,
-    isStale,
   } = useQuery({
     queryKey: ['places', debouncedQuery],
     queryFn: () => fetchPlaces(debouncedQuery),

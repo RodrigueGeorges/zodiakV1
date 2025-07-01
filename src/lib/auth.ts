@@ -1,5 +1,4 @@
 import { supabase } from './supabase';
-import { StorageService } from './storage';
 import { ErrorMessages } from './errors';
 import { validatePhone, formatPhoneNumberForVonage } from './utils';
 

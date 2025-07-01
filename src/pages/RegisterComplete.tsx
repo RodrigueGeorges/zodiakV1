@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/hooks/useAuth.tsx';
 import { supabase } from '../lib/supabase';
@@ -8,6 +8,7 @@ import StarryBackground from '../components/StarryBackground';
 import PlaceAutocomplete from '../components/PlaceAutocomplete';
 import { getCoordsFromPlaceString, type Place } from '../lib/places';
 import { AstrologyService } from '../lib/astrology';
+import type { NatalChart } from '../lib/astrology';
 
 export default function RegisterComplete() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export default function RegisterComplete() {
         birthDate: profile.birth_date || '',
         birthTime: profile.birth_time || '',
         birthPlace: profile.birth_place || '',
-        guidanceTime: profile.guidance_time || '08:00',
+        guidanceTime: profile.guidance_sms_time || '08:00',
       }));
       // If a birth place is already set, consider it valid
       if (profile.birth_place) {
@@ -89,8 +90,8 @@ export default function RegisterComplete() {
         birth_date: form.birthDate,
         birth_time: form.unknownTime ? null : form.birthTime,
         birth_place: form.birthPlace,
-        natal_chart: natalChart as any,
-        guidance_time: form.guidanceTime,
+        natal_chart: natalChart as NatalChart,
+        guidance_sms_time: form.guidanceTime,
         updated_at: new Date().toISOString(),
       });
 
@@ -104,8 +105,8 @@ export default function RegisterComplete() {
         navigate('/guidance?tab=natal_chart', { replace: true });
       }, 1000);
 
-    } catch (err: any) {
-      setError(err.message || 'Erreur lors de la mise à jour du profil.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erreur lors de la mise à jour du profil.');
     } finally {
       setLoading(false);
     }

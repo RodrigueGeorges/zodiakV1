@@ -1,7 +1,7 @@
 import { WorkflowValidator } from '../WorkflowValidator';
 import { SuperAuthService } from '../../auth';
 import { StorageService } from '../../storage';
-import { validatePhone, validateCode, validateSession } from '../auth';
+import { validatePhone, validateCode } from '../auth';
 
 export class AuthWorkflowValidator {
   private static validator = WorkflowValidator.getInstance();

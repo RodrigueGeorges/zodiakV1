@@ -1,12 +1,28 @@
-import { GuidanceService } from '../../lib/services/GuidanceService';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import GuidanceService from '../../lib/services/GuidanceService';
 import { AstrologyService } from '../../lib/astrology';
 import { SMSService } from '../../lib/sms';
 import { StorageService } from '../../lib/storage';
 import type { Profile } from '../../lib/types/supabase';
 
-jest.mock('../../lib/astrology');
-jest.mock('../../lib/sms');
-jest.mock('../../lib/storage');
+// Mock des dépendances
+vi.mock('../../lib/api', () => ({
+  api: {
+    get: vi.fn(),
+    post: vi.fn()
+  }
+}));
+
+vi.mock('../../lib/storage', () => ({
+  StorageService: {
+    saveDailyGuidance: vi.fn(),
+    getDailyGuidance: vi.fn()
+  }
+}));
+
+vi.mock('../../lib/astrology');
+vi.mock('../../lib/sms');
+vi.mock('../../lib/storage');
 
 describe('GuidanceService', () => {
   const mockProfile: Profile = {
@@ -17,6 +33,10 @@ describe('GuidanceService', () => {
     birth_time: '12:00',
     birth_place: 'Paris, France',
     natal_chart: {},
+    natal_chart_interpretation: null,
+    natal_summary: null,
+    daily_guidance_sms_enabled: true,
+    guidance_sms_time: '08:00',
     trial_ends_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     subscription_status: 'trial',
     last_guidance_sent: null,
@@ -32,13 +52,13 @@ describe('GuidanceService', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     
     // Mock des méthodes des services
-    (AstrologyService.generateDailyGuidance as jest.Mock).mockResolvedValue(mockGuidance);
-    (SMSService.sendSMS as jest.Mock).mockResolvedValue({ success: true });
-    (StorageService.saveDailyGuidance as jest.Mock).mockResolvedValue(true);
-    (StorageService.saveProfile as jest.Mock).mockResolvedValue(true);
+    (AstrologyService.generateDailyGuidance as any).mockResolvedValue(mockGuidance);
+    (SMSService.sendSMS as any).mockResolvedValue({ success: true });
+    (StorageService.saveDailyGuidance as any).mockResolvedValue(true);
+    (StorageService.saveProfile as any).mockResolvedValue(true);
   });
 
   describe('generateAndSendGuidance', () => {
@@ -76,7 +96,7 @@ describe('GuidanceService', () => {
     });
 
     it('should handle errors gracefully', async () => {
-      (AstrologyService.generateDailyGuidance as jest.Mock).mockRejectedValue(
+      (AstrologyService.generateDailyGuidance as any).mockRejectedValue(
         new Error('API Error')
       );
 
@@ -91,11 +111,11 @@ describe('GuidanceService', () => {
 
   describe('startDailyScheduler', () => {
     beforeEach(() => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('should start scheduler and process guidance', () => {
@@ -105,7 +125,7 @@ describe('GuidanceService', () => {
       expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 60 * 1000);
 
       // Simule le passage du temps
-      jest.advanceTimersByTime(60 * 1000);
+      vi.advanceTimersByTime(60 * 1000);
 
       // Les vérifications spécifiques au timing devraient être faites ici
       // Note: Les tests de timing précis sont complexes et peuvent être peu fiables
