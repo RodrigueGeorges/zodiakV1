@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Heart, Briefcase, Battery } from 'lucide-react';
 import { DateTime } from 'luxon';
 import { toast } from 'react-hot-toast';

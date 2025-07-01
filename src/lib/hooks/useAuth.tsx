@@ -63,17 +63,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setSession(null);
           setUser(null);
           setProfile(null);
+          setIsAuthenticated(false);
           setIsLoading(false);
           return;
         }
         setSession(session);
         setUser(session.user);
+        setIsAuthenticated(true);
         const userProfile = await StorageService.getProfile(session.user.id);
         setProfile(userProfile);
       } else {
         setSession(null);
         setUser(null);
         setProfile(null);
+        setIsAuthenticated(false);
       }
       setIsLoading(false);
     };
@@ -82,31 +85,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setData(session);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setData(session);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      handleAuthStateChange(event, session);
-    });
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event, session?.user?.id);
+      
       if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESH_FAILED') {
         // Token invalide ou expiré
         navigate('/login', { replace: true });
       }
+      
+      setData(session);
     });
+
     return () => {
       subscription.unsubscribe();
     };

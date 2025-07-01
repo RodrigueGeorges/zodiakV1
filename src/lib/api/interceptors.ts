@@ -1,9 +1,5 @@
 import { ApiError } from '../errors';
 
-interface RequestConfig extends RequestInit {
-  timeout?: number;
-}
-
 interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;

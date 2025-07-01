@@ -56,7 +56,7 @@ export class RegistrationWorkflow {
         birth_date: data.birthData.date_of_birth,
         birth_time: data.birthData.time_of_birth,
         birth_place: data.birthPlace.label,
-        natal_chart: natalChart,
+        natal_chart: JSON.parse(JSON.stringify(natalChart)),
         trial_ends_at: new Date(Date.now() + this.TRIAL_DURATION).toISOString(),
         subscription_status: 'trial',
         last_guidance_sent: null,

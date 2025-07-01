@@ -6,7 +6,7 @@ type LogEntry = {
   timestamp: string;
   level: LogLevel;
   message: string;
-  data?: any;
+  data?: unknown;
 };
 
 export class Logger {
@@ -14,7 +14,7 @@ export class Logger {
   private static readonly STORAGE_KEY = 'app_logs';
   private static readonly SENSITIVE_FIELDS = ['password', 'token', 'code', 'phone'];
 
-  private static sanitizeData(data: any): any {
+  private static sanitizeData(data: unknown): unknown {
     if (!data) return data;
     
     if (typeof data === 'object') {
@@ -49,7 +49,7 @@ export class Logger {
     }
   }
 
-  private static addLog(level: LogLevel, message: string, data?: any): void {
+  private static addLog(level: LogLevel, message: string, data?: unknown): void {
     try {
       const logs = this.getLogs();
       logs.push({
@@ -64,19 +64,19 @@ export class Logger {
     }
   }
 
-  static debug(message: string, data?: any): void {
+  static debug(message: string, data?: unknown): void {
     this.addLog('debug', message, data);
   }
 
-  static info(message: string, data?: any): void {
+  static info(message: string, data?: unknown): void {
     this.addLog('info', message, data);
   }
 
-  static warn(message: string, data?: any): void {
+  static warn(message: string, data?: unknown): void {
     this.addLog('warn', message, data);
   }
 
-  static error(message: string, data?: any): void {
+  static error(message: string, data?: unknown): void {
     this.addLog('error', message, data);
   }
 

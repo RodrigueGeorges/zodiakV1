@@ -124,5 +124,5 @@ export type DesignToken = typeof DESIGN_TOKENS[keyof typeof DESIGN_TOKENS];
 
 // Fonction utilitaire pour accéder aux tokens de design
 export function getDesignToken(path: string): string {
-  return path.split('.').reduce((obj, key) => obj[key], DESIGN_TOKENS as any);
+  return path.split('.').reduce((obj, key) => (obj as Record<string, unknown>)[key], DESIGN_TOKENS as Record<string, unknown>) as string;
 }

@@ -41,7 +41,7 @@ export class PerformanceMonitor {
       new PerformanceObserver((entryList) => {
         let cls = 0;
         for (const entry of entryList.getEntries()) {
-          const layoutShiftEntry = entry as any;
+          const layoutShiftEntry = entry as unknown;
           if (!layoutShiftEntry.hadRecentInput) {
             cls += layoutShiftEntry.value;
           }

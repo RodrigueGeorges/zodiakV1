@@ -7,11 +7,36 @@ interface AstrologyRequest {
   birthPlace: string;
 }
 
+interface Planet {
+  name: string;
+  longitude: number;
+  house: number;
+  sign: string;
+  retrograde: boolean;
+}
+
+interface House {
+  number: number;
+  sign: string;
+  degree: number;
+}
+
+interface Ascendant {
+  sign: string;
+  degree: number;
+}
+
+interface NatalChart {
+  planets: Planet[];
+  houses: House[];
+  ascendant: Ascendant;
+}
+
 // Cache simple côté serveur (en mémoire)
-const serverCache = new Map<string, { data: any; timestamp: number }>();
+const serverCache = new Map<string, { data: NatalChart; timestamp: number }>();
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 heures
 
-function getFromCache(key: string): any | null {
+function getFromCache(key: string): NatalChart | null {
   const cached = serverCache.get(key);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
     console.log('✅ Cache hit for key:', key);
@@ -23,7 +48,7 @@ function getFromCache(key: string): any | null {
   return null;
 }
 
-function setInCache(key: string, data: any): void {
+function setInCache(key: string, data: NatalChart): void {
   serverCache.set(key, {
     data,
     timestamp: Date.now()
@@ -259,4 +284,8 @@ export const handler: Handler = async (event, context) => {
       }),
     };
   }
-}; 
+};
+
+async function calculateNatalChart(data: { birthDate: string; birthTime: string; birthPlace: string }): Promise<NatalChart> {
+  // ...
+} 

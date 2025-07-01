@@ -5,19 +5,15 @@ interface PerformanceMetric {
   value: number;
   unit: string;
   timestamp: number;
+  startTime?: number;
+  endTime?: number;
+  duration?: number;
+  metadata?: Record<string, unknown>;
 }
 
 interface PerformanceObserver {
   observe: (target: Element) => void;
   disconnect: () => void;
-}
-
-interface PerformanceObserverCallback {
-  (entries: PerformanceEntryList): void;
-}
-
-interface PerformanceEntryList {
-  getEntries(): PerformanceEntry[];
 }
 
 interface PerformanceEntry {
@@ -37,7 +33,7 @@ export function usePerformance(options: UsePerformanceOptions = {}) {
   const metricsRef = useRef<Map<string, PerformanceMetric>>(new Map());
   const observersRef = useRef<PerformanceObserver[]>([]);
 
-  const startTimer = useCallback((name: string, metadata?: Record<string, any>) => {
+  const startTimer = useCallback((name: string, metadata?: Record<string, unknown>) => {
     const startTime = performance.now();
     metricsRef.current.set(name, {
       name,
@@ -50,7 +46,7 @@ export function usePerformance(options: UsePerformanceOptions = {}) {
     }
   }, [enableLogging]);
 
-  const endTimer = useCallback((name: string, additionalMetadata?: Record<string, any>) => {
+  const endTimer = useCallback((name: string, additionalMetadata?: Record<string, unknown>) => {
     const metric = metricsRef.current.get(name);
     if (!metric) {
       console.warn(`Performance metric not found: ${name}`);
@@ -82,7 +78,7 @@ export function usePerformance(options: UsePerformanceOptions = {}) {
   const measureAsync = useCallback(async <T>(
     name: string, 
     asyncFunction: () => Promise<T>,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<T> => {
     startTimer(name, metadata);
     
