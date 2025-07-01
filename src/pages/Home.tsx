@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Sparkle, Moon, Sun, Compass, Clock } from 'lucide-react';
@@ -9,9 +9,12 @@ import Logo from '../components/Logo';
 import StarryBackground from '../components/StarryBackground';
 import InteractiveCard from '../components/InteractiveCard';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../lib/hooks/useAuth';
+import CosmicLoader from '../components/CosmicLoader';
 
 export default function Home() {
   const navigate = useNavigate();
+  const { isAuthenticated, isLoading } = useAuth();
   const [authMode, setAuthMode] = useState<'sms' | 'email'>('email');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,6 +22,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      navigate('/profile', { replace: true });
+    }
+  }, [isAuthenticated, isLoading, navigate]);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +67,14 @@ export default function Home() {
     }
   };
 
+  if (isAuthenticated || isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-cosmic-900">
+        <CosmicLoader />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen overflow-hidden relative">
       <StarryBackground />
@@ -96,7 +113,7 @@ export default function Home() {
                   className="mt-3 md:mt-4"
                 >
                   <p className="text-lg sm:text-xl md:text-3xl xl:text-4xl 2xl:text-5xl text-gray-300 font-cinzel">
-                    Découvrez chaque jour ce que les astres réservent à votre destinée
+                    Vivez chaque jour une expérience unique grâce à l'astrologie personnalisée, des conseils inspirants et des outils pour mieux vous connaître.
                   </p>
                 </motion.div>
                 <div className="mt-6 max-w-2xl mx-auto">
@@ -217,22 +234,22 @@ export default function Home() {
                 {
                   icon: <Sun className="w-5 h-5 md:w-6 md:h-6" />,
                   title: "Guidance Quotidienne",
-                  description: "Recevez chaque jour des prédictions personnalisées basées sur votre thème astral unique."
+                  description: "Recevez chaque matin un message inspirant et personnalisé, basé sur votre thème astral unique, pour avancer sereinement dans votre vie."
                 },
                 {
                   icon: <Moon className="w-5 h-5 md:w-6 md:h-6" />,
                   title: "Thème Astral Détaillé",
-                  description: "Découvrez l'influence des planètes sur votre vie grâce à une analyse approfondie."
+                  description: "Profitez d'analyses astrologiques approfondies pour comprendre l'influence des planètes sur votre parcours et révéler les clés de votre bien-être."
                 },
                 {
                   icon: <Compass className="w-5 h-5 md:w-6 md:h-6" />,
                   title: "Navigation Céleste",
-                  description: "Prenez des décisions éclairées en harmonie avec les énergies cosmiques."
+                  description: "Prenez des décisions éclairées grâce à des conseils personnalisés, en harmonie avec les énergies cosmiques de votre carte du ciel."
                 },
                 {
                   icon: <Clock className="w-5 h-5 md:w-6 md:h-6" />,
                   title: "Timing Parfait",
-                  description: "Identifiez les moments propices pour vos projets importants."
+                  description: "Identifiez les moments les plus propices pour vos projets importants, grâce à une guidance adaptée à votre profil astral et à l'énergie du jour."
                 }
               ].map((feature, index) => (
                 <motion.div

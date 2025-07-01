@@ -12,6 +12,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import { DESIGN_TOKENS } from '../lib/constants/design';
 import { AstrologyService } from '../lib/astrology';
 import type { Place } from '../lib/types/supabase';
+import NatalSignature from '../components/NatalSignature';
 
 // Animations pour les transitions
 const pageVariants = {
@@ -179,6 +180,19 @@ export function Profile() {
     return <LoadingScreen />;
   }
 
+  let natalChart: any = null;
+  if (profile?.natal_chart) {
+    if (typeof profile.natal_chart === 'string') {
+      try {
+        natalChart = JSON.parse(profile.natal_chart);
+      } catch {
+        natalChart = null;
+      }
+    } else {
+      natalChart = profile.natal_chart;
+    }
+  }
+
   return (
     <motion.div 
       className="min-h-screen bg-cosmic-900 relative"
@@ -202,6 +216,13 @@ export function Profile() {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
               {/* Colonne principale */}
               <div className="xl:col-span-2 space-y-6">
+                {natalChart && natalChart.planets && natalChart.ascendant && (
+                  <NatalSignature
+                    sunSign={natalChart.planets.find((p: any) => p.name === 'Soleil')?.sign || ''}
+                    moonSign={natalChart.planets.find((p: any) => p.name === 'Lune')?.sign || ''}
+                    ascendantSign={natalChart.ascendant.sign || ''}
+                  />
+                )}
                 {/* Informations personnelles */}
                 <motion.div
                   variants={cardVariants}
