@@ -7,7 +7,7 @@ function TopNavBar() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  if (!user) return null;
+  if (!user || location.pathname === '/') return null;
 
   const navItems = [
     { label: 'Profil', icon: <User />, path: '/profile' },

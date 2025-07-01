@@ -23,12 +23,6 @@ export default function Home() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      navigate('/profile', { replace: true });
-    }
-  }, [isAuthenticated, isLoading, navigate]);
-
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);

@@ -13,6 +13,7 @@ import Test from './pages/Test';
 import BottomNavBar from './components/BottomNavBar';
 import TopNavBar from './components/TopNavBar';
 import { useAuth } from './lib/hooks/useAuth';
+import PrivateRoute from './components/PrivateRoute';
 import './index.css';
 
 function App() {
@@ -23,13 +24,13 @@ function App() {
       {user && <TopNavBar />}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/guidance" element={<Guidance />} />
-        <Route path="/natal" element={<Natal />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/guidance" element={<PrivateRoute><Guidance /></PrivateRoute>} />
+        <Route path="/natal" element={<PrivateRoute><Natal /></PrivateRoute>} />
         <Route path="/register/complete" element={<RegisterComplete />} />
         <Route path="/subscribe" element={<Subscribe />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/test" element={<Test />} />
       </Routes>

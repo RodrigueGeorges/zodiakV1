@@ -9,7 +9,7 @@ function BottomNavBar() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  if (!user) return null;
+  if (!user || location.pathname === '/') return null;
 
   const navItems = [
     { path: '/profile', icon: User, label: 'Profil' },
