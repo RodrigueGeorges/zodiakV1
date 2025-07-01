@@ -106,14 +106,8 @@ export default function Home() {
                   transition={{ delay: 0.4 }}
                   className="mt-3 md:mt-4"
                 >
-                  <p className="text-lg sm:text-xl md:text-3xl xl:text-4xl 2xl:text-5xl text-gray-300 font-cinzel">
-                    Vivez chaque jour une expérience unique grâce à l'astrologie personnalisée, des conseils inspirants et des outils pour mieux vous connaître.
-                  </p>
                 </motion.div>
                 <div className="mt-6 max-w-2xl mx-auto">
-                  <p className="text-base md:text-xl text-gray-200 mb-6 text-center">
-                    Recevez chaque matin une guidance personnalisée, basée sur votre thème astral unique. Profitez d'analyses astrologiques, de conseils bien-être et d'un accompagnement sur-mesure pour avancer sereinement dans votre vie.
-                  </p>
                   <ul className="space-y-2 text-lg text-gray-100 mb-8 text-left md:text-center">
                     <li>🔮 <b>Guidance quotidienne</b> : Un message inspirant et personnalisé chaque jour</li>
                     <li>🪐 <b>Thème natal interactif</b> : Visualisez et comprenez votre carte du ciel</li>
@@ -130,6 +124,17 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mb-4"
+            >
+              <p className="text-lg text-primary font-cinzel italic text-center">
+                L'astrologie qui éclaire votre quotidien.
+              </p>
             </motion.div>
 
             <div className="max-w-md mx-auto mb-6 md:mb-8">
