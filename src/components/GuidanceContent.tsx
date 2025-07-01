@@ -191,7 +191,7 @@ function GuidanceContent(): JSX.Element {
             isOpen={showShareModal}
             onClose={() => setShowShareModal(false)}
             guidance={getGuidanceText(guidance.summary)}
-            userName={user?.profile.name || 'Utilisateur'}
+            userName={(user && (user.profile?.name || user.name)) || 'Utilisateur'}
           />
         )}
       </div>
