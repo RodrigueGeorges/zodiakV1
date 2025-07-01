@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Guidance from './pages/Guidance';
 import Natal from './pages/Natal';
@@ -11,11 +11,16 @@ import Login from './pages/Login';
 import Admin from './pages/Admin';
 import Test from './pages/Test';
 import BottomNavBar from './components/BottomNavBar';
+import TopNavBar from './components/TopNavBar';
+import { useAuth } from './lib/hooks/useAuth';
 import './index.css';
 
 function App() {
+  const { user } = useAuth();
+
   return (
-    <Router>
+    <>
+      {user && <TopNavBar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/guidance" element={<Guidance />} />
@@ -28,8 +33,8 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/test" element={<Test />} />
       </Routes>
-      <BottomNavBar />
-    </Router>
+      {user && <BottomNavBar />}
+    </>
   );
 }
 

@@ -9,7 +9,7 @@ import { cn } from '../lib/utils';
 
 export default function Register() {
   const navigate = useNavigate();
-  const [authMode, setAuthMode] = useState<'sms' | 'email'>('sms');
+  const [authMode, setAuthMode] = useState<'sms' | 'email'>('email');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -20,21 +20,31 @@ export default function Register() {
     setEmailError(null);
     setEmailInfo(null);
     try {
+      console.log('Tentative d\'inscription avec:', email);
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: window.location.origin
+          emailRedirectTo: `${window.location.origin}/login`
         }
       });
-      if (error || !data.user) {
-        setEmailError(error?.message || "Erreur lors de l'inscription");
+      
+      if (error) {
+        console.error('Erreur d\'inscription:', error);
+        setEmailError(error.message);
         return;
       }
-      setEmailInfo('Inscription réussie ! Vérifiez votre boîte mail pour confirmer votre adresse avant de compléter votre profil.');
-      setEmail('');
-      setPassword('');
+      
+      if (data.user) {
+        console.log('Inscription réussie pour:', data.user.email);
+        setEmailInfo('Inscription réussie ! Vérifiez votre boîte mail pour confirmer votre adresse avant de vous connecter.');
+        setEmail('');
+        setPassword('');
+      } else {
+        setEmailError("Erreur lors de l'inscription - aucun utilisateur créé");
+      }
     } catch (error) {
+      console.error('Erreur inattendue lors de l\'inscription:', error);
       setEmailError(error instanceof Error ? error.message : 'Erreur lors de l\'inscription');
     }
   };

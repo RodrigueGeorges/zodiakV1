@@ -96,9 +96,28 @@ export default function Home() {
                   className="mt-3 md:mt-4"
                 >
                   <p className="text-lg sm:text-xl md:text-3xl xl:text-4xl 2xl:text-5xl text-gray-300 font-cinzel">
-                    Votre boussole céleste au quotidien
+                    Découvrez chaque jour ce que les astres réservent à votre destinée
                   </p>
                 </motion.div>
+                <div className="mt-6 max-w-2xl mx-auto">
+                  <p className="text-base md:text-xl text-gray-200 mb-6 text-center">
+                    Recevez chaque matin une guidance personnalisée, basée sur votre thème astral unique. Profitez d'analyses astrologiques, de conseils bien-être et d'un accompagnement sur-mesure pour avancer sereinement dans votre vie.
+                  </p>
+                  <ul className="space-y-2 text-lg text-gray-100 mb-8 text-left md:text-center">
+                    <li>🔮 <b>Guidance quotidienne</b> : Un message inspirant et personnalisé chaque jour</li>
+                    <li>🪐 <b>Thème natal interactif</b> : Visualisez et comprenez votre carte du ciel</li>
+                    <li>📱 <b>Notifications & SMS</b> : Recevez vos guidances où que vous soyez</li>
+                    <li>🤝 <b>Accompagnement personnalisé</b> : Conseils bien-être adaptés à votre profil astral</li>
+                  </ul>
+                  <div className="flex justify-center">
+                    <button
+                      className="px-8 py-3 bg-primary text-black rounded-lg font-bold text-lg shadow-lg hover:bg-secondary transition"
+                      onClick={() => setIsSignUp(true)}
+                    >
+                      Commencez votre voyage astral
+                    </button>
+                  </div>
+                </div>
               </div>
             </motion.div>
 

@@ -93,11 +93,32 @@ const PhoneAuth = forwardRef<HTMLInputElement, PhoneAuthProps>(function PhoneAut
 
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
       const cleanedPhone = phone.replace(/\D/g, '');
-      props.onSuccess?.(cleanedPhone);
-      toast.success('Numéro de téléphone vérifié avec succès !');
+      
+      // Appel à l'API de vérification
+      const response = await fetch('/api/verify-sms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: cleanedPhone,
+          code: code
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Code incorrect');
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        props.onSuccess?.(cleanedPhone);
+        toast.success('Numéro de téléphone vérifié avec succès !');
+      } else {
+        throw new Error(result.error || 'Code incorrect');
+      }
     } catch (error) {
       console.error('Error verifying code:', error);
       toast.error('Code incorrect. Veuillez réessayer.');

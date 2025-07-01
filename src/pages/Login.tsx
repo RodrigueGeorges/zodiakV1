@@ -21,12 +21,21 @@ export default function Login() {
     setError(null);
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      console.log('Tentative de connexion avec:', email);
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      
       if (error) {
+        console.error('Erreur de connexion:', error);
         setError(error.message);
+        return;
       }
-      // La redirection est gérée globalement dans App.tsx
+      
+      if (data.user) {
+        console.log('Connexion réussie pour:', data.user.email);
+        // La redirection est gérée globalement par useAuth
+      }
     } catch (err) {
+      console.error('Erreur inattendue:', err);
       setError(err instanceof Error ? err.message : 'Erreur lors de la connexion');
     } finally {
       setLoading(false);
@@ -89,6 +98,27 @@ export default function Login() {
                 >
                   {loading ? 'Connexion...' : 'Se connecter'}
                 </button>
+                <div className="text-center">
+                  <button
+                    type="button"
+                    className="text-sm text-blue-400 hover:text-blue-300 underline"
+                    onClick={() => {
+                      if (email) {
+                        supabase.auth.resetPasswordForEmail(email, {
+                          redirectTo: `${window.location.origin}/login`
+                        }).then(() => {
+                          alert('Email de réinitialisation envoyé !');
+                        }).catch(err => {
+                          console.error('Erreur envoi email:', err);
+                        });
+                      } else {
+                        alert('Veuillez d\'abord entrer votre email');
+                      }
+                    }}
+                  >
+                    Mot de passe oublié ?
+                  </button>
+                </div>
               </form>
             )}
             <div className="mt-4 text-center">
