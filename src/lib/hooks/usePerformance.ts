@@ -2,10 +2,29 @@ import { useRef, useCallback, useEffect } from 'react';
 
 interface PerformanceMetric {
   name: string;
+  value: number;
+  unit: string;
+  timestamp: number;
+}
+
+interface PerformanceObserver {
+  observe: (target: Element) => void;
+  disconnect: () => void;
+}
+
+interface PerformanceObserverCallback {
+  (entries: PerformanceEntryList): void;
+}
+
+interface PerformanceEntryList {
+  getEntries(): PerformanceEntry[];
+}
+
+interface PerformanceEntry {
+  name: string;
+  entryType: string;
   startTime: number;
-  endTime?: number;
-  duration?: number;
-  metadata?: Record<string, any>;
+  duration: number;
 }
 
 interface UsePerformanceOptions {

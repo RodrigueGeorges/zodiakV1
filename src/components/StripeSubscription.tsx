@@ -2,12 +2,17 @@ import React from 'react';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
+import { loadStripe } from '@stripe/stripe-js';
 
 interface StripeSubscriptionProps {
   className?: string;
 }
 
 declare global {
+  interface Window {
+    Stripe: typeof import('@stripe/stripe-js');
+  }
+  
   namespace JSX {
     interface IntrinsicElements {
       'stripe-pricing-table': React.DetailedHTMLProps<
@@ -20,6 +25,8 @@ declare global {
     }
   }
 }
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 export function StripeSubscription({ className }: StripeSubscriptionProps) {
   useEffect(() => {

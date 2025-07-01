@@ -70,7 +70,11 @@ export const DESIGN_TOKENS = {
           50% { transform: scale(1.5); opacity: 1; }
         }
       `,
-    }
+    },
+    fadeIn: 'animate-fade-in',
+    slideUp: 'animate-slide-up',
+    pulse: 'animate-pulse',
+    cosmic: 'animate-cosmic-text'
   },
 
   // Composants de base
@@ -81,6 +85,8 @@ export const DESIGN_TOKENS = {
       border: 'border border-white/10',
       rounded: 'rounded-lg',
       shadow: 'shadow-xl',
+      base: 'bg-gradient-to-br from-cosmic-800/80 to-cosmic-900/80 rounded-2xl shadow-lg border border-primary/10 p-6',
+      interactive: 'bg-gradient-to-br from-cosmic-800/80 to-cosmic-900/80 rounded-2xl shadow-lg border border-primary/10 p-6 hover:border-primary/30 transition-all duration-200 cursor-pointer'
     },
     button: {
       base: [
@@ -89,35 +95,23 @@ export const DESIGN_TOKENS = {
         'focus:outline-none focus:ring-2',
         'disabled:opacity-50 disabled:cursor-not-allowed'
       ].join(' '),
-      primary: [
-        'bg-gradient-to-r from-[#F5CBA7] to-[#D4A373]',
-        'text-gray-900 font-semibold',
-        'hover:opacity-90',
-        'focus:ring-[#F5CBA7]/50'
-      ].join(' '),
-      secondary: [
-        'bg-white/5 hover:bg-white/10',
-        'text-white',
-        'focus:ring-white/50'
-      ].join(' ')
+      primary: 'px-6 py-3 bg-gradient-to-r from-primary to-secondary text-black font-semibold rounded-lg hover:opacity-90 transition-all duration-200 shadow-lg',
+      secondary: 'px-6 py-3 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-all duration-200 border border-white/20',
+      ghost: 'px-6 py-3 text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-200'
     },
     input: {
-      base: [
-        'w-full px-4 py-3 rounded-lg',
-        'bg-white/5 backdrop-blur-lg',
-        'border border-white/10',
-        'text-white placeholder-gray-400',
-        'focus:border-[#F5CBA7] focus:ring-2 focus:ring-[#F5CBA7]/50',
-        'transition-all duration-200'
-      ].join(' ')
+      base: 'w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/50 transition-all duration-200',
+      error: 'border-red-500 focus:border-red-500 focus:ring-red-500/50',
+      success: 'border-green-500 focus:border-green-500 focus:ring-green-500/50'
     }
   },
 
   // Effets visuels
   effects: {
     gradients: {
-      primary: 'bg-gradient-to-r from-[#F5CBA7] via-[#D4A373] to-[#F5CBA7]',
-      cosmic: 'bg-gradient-to-b from-[#0f172a] to-[#1e293b]',
+      primary: 'bg-gradient-to-r from-primary to-secondary',
+      cosmic: 'bg-gradient-to-br from-cosmic-800 to-cosmic-900',
+      glass: 'bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm'
     },
     text: {
       gradient: 'text-transparent bg-clip-text',
@@ -125,6 +119,8 @@ export const DESIGN_TOKENS = {
     }
   }
 } as const;
+
+export type DesignToken = typeof DESIGN_TOKENS[keyof typeof DESIGN_TOKENS];
 
 // Fonction utilitaire pour accéder aux tokens de design
 export function getDesignToken(path: string): string {

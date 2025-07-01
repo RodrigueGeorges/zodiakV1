@@ -21,7 +21,7 @@ export class ErrorHandler {
     };
   }
 
-  static handleError(error: Error, context: Record<string, any> = {}): void {
+  static handleError(error: Error, context: Record<string, unknown> = {}): void {
     // Éviter les boucles infinies
     if (this.isHandlingError) return;
     this.isHandlingError = true;
@@ -35,7 +35,7 @@ export class ErrorHandler {
       });
 
       // Afficher un message à l'utilisateur si nécessaire
-      if (process.env.NODE_ENV === 'production') {
+      if (import.meta.env.PROD) {
         // En production, afficher un message générique
         console.error('Une erreur est survenue. Notre équipe a été notifiée.');
       } else {

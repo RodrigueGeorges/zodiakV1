@@ -1,9 +1,14 @@
 import { ApiError } from '../errors';
 
-export interface ApiResponse<T = any> {
+interface RequestConfig extends RequestInit {
+  timeout?: number;
+}
+
+interface ApiResponse<T = unknown> {
+  success: boolean;
   data?: T;
   error?: string;
-  status: number;
+  status?: number;
 }
 
 export const apiInterceptors = {
@@ -23,13 +28,13 @@ export const apiInterceptors = {
       if (!response.ok) {
         throw new ApiError(
           response.statusText,
-          'API_ERROR',
-          response.status
+          'API_ERROR'
         );
       }
 
       const data = await response.json();
       return {
+        success: true,
         data,
         status: response.status,
       };
@@ -39,8 +44,7 @@ export const apiInterceptors = {
       }
       throw new ApiError(
         'Une erreur est survenue',
-        'API_ERROR',
-        response.status
+        'API_ERROR'
       );
     }
   },
