@@ -1,5 +1,6 @@
 import type { Handler, HandlerEvent } from '@netlify/functions';
 import fetch from 'node-fetch';
+import AbortController from 'abort-controller';
 
 // Fonction pour construire une réponse standardisée
 const buildResponse = (statusCode: number, body: any, headers: Record<string, string> = {}) => ({
@@ -27,12 +28,18 @@ const handler: Handler = async (event: HandlerEvent) => {
     query
   )}`;
 
+  // Timeout de 7 secondes
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 7000);
+
   try {
     const response = await fetch(url, {
       headers: {
         'User-Agent': userAgent,
       },
+      signal: controller.signal,
     });
+    clearTimeout(timeout);
 
     if (!response.ok) {
       console.error(`Erreur Nominatim: ${response.status} ${response.statusText}`);
@@ -45,7 +52,12 @@ const handler: Handler = async (event: HandlerEvent) => {
     return buildResponse(200, data);
     
   } catch (err) {
+    clearTimeout(timeout);
     const error = err as Error;
+    if (error.name === 'AbortError') {
+      console.error('Timeout lors de la requête Nominatim');
+      return buildResponse(504, { error: 'Timeout lors de la requête Nominatim' });
+    }
     console.error('Erreur interne du serveur:', error);
     return buildResponse(500, { error: `Erreur interne du serveur: ${error.message}` });
   }
