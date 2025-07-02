@@ -29,10 +29,10 @@ export default function RegisterComplete() {
   const [placeStatus, setPlaceStatus] = useState({ loading: false, error: null as string | null, valid: false });
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isLoading && !user) {
       navigate('/login', { replace: true });
     }
-    // Pre-fill form with existing profile data
+    // Pré-fill form with existing profile data
     if (user && profile) {
       setForm(prevForm => ({
         ...prevForm,
@@ -48,7 +48,7 @@ export default function RegisterComplete() {
         setPlaceStatus({ loading: false, error: null, valid: true });
       }
     }
-  }, [isAuthenticated, isLoading, navigate, user, profile]);
+  }, [isLoading, user, navigate, profile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
