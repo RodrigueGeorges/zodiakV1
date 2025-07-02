@@ -83,17 +83,15 @@ export default function Home() {
               className="mb-4 md:mb-6"
             >
               <Logo />
-              <p className="text-lg text-white font-cinzel italic text-center mt-4 mb-6 relative z-30">
+              <p className="text-2xl md:text-3xl font-cinzel italic text-center mt-4 mb-6 relative z-30 bg-gradient-to-r from-primary via-secondary to-primary text-transparent bg-clip-text drop-shadow-[0_0_12px_#F5CBA7]">
                 L'astrologie qui éclaire votre quotidien.
               </p>
             </motion.div>
 
             {/* BOUTON PRINCIPAL */}
             <motion.button
-              className="px-8 py-3 bg-primary text-black rounded-lg font-bold text-lg shadow-lg hover:bg-secondary transition relative flex items-center gap-2 animate-glow mx-auto mb-8 z-20 no-rotate"
+              className="px-8 py-3 bg-primary text-black rounded-lg font-bold text-lg shadow-lg hover:bg-secondary transition relative flex items-center gap-2 mx-auto mb-8 z-20 no-rotate"
               onClick={() => setShowModal(true)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
             >
               <Sparkle className="w-6 h-6 text-yellow-300" />
               Commencez votre voyage astral
@@ -195,19 +193,20 @@ export default function Home() {
               </div>
             )}
 
+            {/* BANDEAU ESSAI */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="relative mb-16 md:mb-24"
+              className="relative mb-8 md:mb-12"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20 blur-xl opacity-50" />
-              <div className="relative bg-white/5 backdrop-blur-lg rounded-full py-3 md:py-4 px-6 md:px-8 xl:px-16 2xl:px-24 inline-flex items-center gap-3 md:gap-4 border border-white/10 shadow-2xl">
-                <Sparkle className="w-5 h-5 md:w-6 md:h-6 text-primary animate-pulse" />
-                <span className="text-xl md:text-2xl xl:text-3xl 2xl:text-4xl font-cinzel font-semibold bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
-                  7 jours d'essai gratuit
+              <div className="relative bg-white/5 backdrop-blur-lg rounded-full py-2 md:py-2 px-4 md:px-6 xl:px-10 2xl:px-14 inline-flex items-center gap-2 md:gap-3 border border-white/10 shadow-2xl">
+                <Sparkle className="w-4 h-4 md:w-5 md:h-5 text-primary animate-pulse" />
+                <span className="text-base md:text-lg xl:text-xl 2xl:text-2xl font-cinzel font-semibold bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
+                  1 mois d'essai gratuit
                 </span>
-                <Sparkle className="w-5 h-5 md:w-6 md:h-6 text-primary animate-pulse" />
+                <Sparkle className="w-4 h-4 md:w-5 md:h-5 text-primary animate-pulse" />
               </div>
             </motion.div>
 
