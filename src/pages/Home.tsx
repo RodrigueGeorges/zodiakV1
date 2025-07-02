@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Sparkle, Moon, Sun, Compass, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -97,82 +96,104 @@ export default function Home() {
               </p>
             </motion.div>
 
-            <div className="max-w-md mx-auto mb-6 md:mb-8">
-              <InteractiveCard className="p-6 md:p-8 xl:p-10 2xl:p-16">
-                <h2 className="text-xl md:text-2xl font-cinzel font-bold text-center mb-4 md:mb-6">
-                  <span className="bg-gradient-to-r from-primary via-secondary to-primary text-transparent bg-clip-text">
-                    {isSignUp ? 'Inscription' : 'Connexion'}
-                  </span>
-                </h2>
-                <div className="flex justify-center mb-4 gap-4">
-                  <button
-                    className={cn('px-3 py-1 rounded', authMode === 'sms' ? 'bg-primary text-black' : 'bg-white/10 text-white')}
-                    onClick={() => setAuthMode('sms')}
-                  >SMS</button>
-                  <button
-                    className={cn('px-3 py-1 rounded', authMode === 'email' ? 'bg-primary text-black' : 'bg-white/10 text-white')}
-                    onClick={() => setAuthMode('email')}
-                  >Email</button>
-                </div>
-                {authMode === 'sms' ? (
-                  <PhoneAuth onSuccess={() => navigate('/guidance')} />
-                ) : (
-                  <form onSubmit={handleEmailAuth} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/50"
-                        placeholder="Votre email"
-                        required
-                      />
+            {/* BOUTON PRINCIPAL */}
+            <motion.button
+              className="px-8 py-3 bg-primary text-black rounded-lg font-bold text-lg shadow-lg hover:bg-secondary transition relative flex items-center gap-2 animate-glow mx-auto mb-8"
+              onClick={() => setShowModal(true)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <Sparkle className="w-6 h-6 text-yellow-300 animate-spin-slow" />
+              Commencez votre voyage astral
+            </motion.button>
+
+            {/* MODALE AVEC FORMULAIRE */}
+            {showModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="bg-cosmic-900 rounded-2xl shadow-2xl p-6 md:p-8 xl:p-10 2xl:p-16 max-w-md w-full relative border border-primary/20"
+                >
+                  <button onClick={() => setShowModal(false)} className="absolute top-3 right-3 text-primary hover:text-secondary text-2xl">×</button>
+                  <InteractiveCard className="p-6 md:p-8 xl:p-10 2xl:p-16">
+                    <h2 className="text-xl md:text-2xl font-cinzel font-bold text-center mb-4 md:mb-6">
+                      <span className="bg-gradient-to-r from-primary via-secondary to-primary text-transparent bg-clip-text">
+                        {isSignUp ? 'Inscription' : 'Connexion'}
+                      </span>
+                    </h2>
+                    <div className="flex justify-center mb-4 gap-4">
+                      <button
+                        className={cn('px-3 py-1 rounded', authMode === 'sms' ? 'bg-primary text-black' : 'bg-white/10 text-white')}
+                        onClick={() => setAuthMode('sms')}
+                      >SMS</button>
+                      <button
+                        className={cn('px-3 py-1 rounded', authMode === 'email' ? 'bg-primary text-black' : 'bg-white/10 text-white')}
+                        onClick={() => setAuthMode('email')}
+                      >Email</button>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1">Mot de passe</label>
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/50"
-                        placeholder="Votre mot de passe"
-                        required
-                      />
+                    {authMode === 'sms' ? (
+                      <PhoneAuth onSuccess={() => navigate('/guidance')} />
+                    ) : (
+                      <form onSubmit={handleEmailAuth} className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/50"
+                            placeholder="Votre email"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-1">Mot de passe</label>
+                          <input
+                            type="password"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/50"
+                            placeholder="Votre mot de passe"
+                            required
+                          />
+                        </div>
+                        {error && <div className="text-red-400 text-sm mb-2">{error}</div>}
+                        {info && <div className="text-green-400 text-sm mb-2">{info}</div>}
+                        <motion.button
+                          type="submit"
+                          className="w-full py-2 rounded-lg bg-primary text-black font-semibold hover:bg-secondary transition-colors relative overflow-hidden"
+                          whileTap={{ scale: 0.97 }}
+                          animate={loading ? { boxShadow: '0 0 24px 8px #F5CBA7' } : {}}
+                          disabled={loading}
+                        >
+                          {loading ? 'Chargement...' : (isSignUp ? 'Créer un compte' : 'Se connecter')}
+                        </motion.button>
+                        <div className="text-center mt-2">
+                          {isSignUp ? (
+                            <span className="text-sm text-gray-400">Déjà un compte ? <button type="button" className="underline text-primary" onClick={() => setIsSignUp(false)}>Se connecter</button></span>
+                          ) : (
+                            <span className="text-sm text-gray-400">Pas encore de compte ? <button type="button" className="underline text-primary" onClick={() => setIsSignUp(true)}>Créer un compte</button></span>
+                          )}
+                        </div>
+                      </form>
+                    )}
+                    <div className="mt-4 md:mt-6 text-center">
+                      <p className="text-sm md:text-base text-gray-400">
+                        Pas encore de compte ?{' '}
+                        <Link 
+                          to="/register" 
+                          className="text-primary hover:text-secondary transition-colors"
+                        >
+                          Inscrivez-vous
+                        </Link>
+                      </p>
                     </div>
-                    {error && <div className="text-red-400 text-sm mb-2">{error}</div>}
-                    {info && <div className="text-green-400 text-sm mb-2">{info}</div>}
-                    <motion.button
-                      type="submit"
-                      className="w-full py-2 rounded-lg bg-primary text-black font-semibold hover:bg-secondary transition-colors relative overflow-hidden"
-                      whileTap={{ scale: 0.97 }}
-                      animate={loading ? { boxShadow: '0 0 24px 8px #F5CBA7' } : {}}
-                      disabled={loading}
-                    >
-                      {loading ? 'Chargement...' : (isSignUp ? 'Créer un compte' : 'Se connecter')}
-                    </motion.button>
-                    <div className="text-center mt-2">
-                      {isSignUp ? (
-                        <span className="text-sm text-gray-400">Déjà un compte ? <button type="button" className="underline text-primary" onClick={() => setIsSignUp(false)}>Se connecter</button></span>
-                      ) : (
-                        <span className="text-sm text-gray-400">Pas encore de compte ? <button type="button" className="underline text-primary" onClick={() => setIsSignUp(true)}>Créer un compte</button></span>
-                      )}
-                    </div>
-                  </form>
-                )}
-                <div className="mt-4 md:mt-6 text-center">
-                  <p className="text-sm md:text-base text-gray-400">
-                    Pas encore de compte ?{' '}
-                    <Link 
-                      to="/register" 
-                      className="text-primary hover:text-secondary transition-colors"
-                    >
-                      Inscrivez-vous
-                    </Link>
-                  </p>
-                </div>
-              </InteractiveCard>
-            </div>
+                  </InteractiveCard>
+                </motion.div>
+              </div>
+            )}
 
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -250,93 +271,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-cosmic-900 rounded-2xl shadow-2xl p-6 md:p-8 xl:p-10 2xl:p-16 max-w-md w-full relative border border-primary/20"
-          >
-            <button onClick={() => setShowModal(false)} className="absolute top-3 right-3 text-primary hover:text-secondary text-2xl">×</button>
-            <InteractiveCard className="p-6 md:p-8 xl:p-10 2xl:p-16">
-              <h2 className="text-xl md:text-2xl font-cinzel font-bold text-center mb-4 md:mb-6">
-                <span className="bg-gradient-to-r from-primary via-secondary to-primary text-transparent bg-clip-text">
-                  {isSignUp ? 'Inscription' : 'Connexion'}
-                </span>
-              </h2>
-              <div className="flex justify-center mb-4 gap-4">
-                <button
-                  className={cn('px-3 py-1 rounded', authMode === 'sms' ? 'bg-primary text-black' : 'bg-white/10 text-white')}
-                  onClick={() => setAuthMode('sms')}
-                >SMS</button>
-                <button
-                  className={cn('px-3 py-1 rounded', authMode === 'email' ? 'bg-primary text-black' : 'bg-white/10 text-white')}
-                  onClick={() => setAuthMode('email')}
-                >Email</button>
-              </div>
-              {authMode === 'sms' ? (
-                <PhoneAuth onSuccess={() => navigate('/guidance')} />
-              ) : (
-                <form onSubmit={handleEmailAuth} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/50"
-                      placeholder="Votre email"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Mot de passe</label>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/50"
-                      placeholder="Votre mot de passe"
-                      required
-                    />
-                  </div>
-                  {error && <div className="text-red-400 text-sm mb-2">{error}</div>}
-                  {info && <div className="text-green-400 text-sm mb-2">{info}</div>}
-                  <motion.button
-                    type="submit"
-                    className="w-full py-2 rounded-lg bg-primary text-black font-semibold hover:bg-secondary transition-colors relative overflow-hidden"
-                    whileTap={{ scale: 0.97 }}
-                    animate={loading ? { boxShadow: '0 0 24px 8px #F5CBA7' } : {}}
-                    disabled={loading}
-                  >
-                    {loading ? 'Chargement...' : (isSignUp ? 'Créer un compte' : 'Se connecter')}
-                  </motion.button>
-                  <div className="text-center mt-2">
-                    {isSignUp ? (
-                      <span className="text-sm text-gray-400">Déjà un compte ? <button type="button" className="underline text-primary" onClick={() => setIsSignUp(false)}>Se connecter</button></span>
-                    ) : (
-                      <span className="text-sm text-gray-400">Pas encore de compte ? <button type="button" className="underline text-primary" onClick={() => setIsSignUp(true)}>Créer un compte</button></span>
-                    )}
-                  </div>
-                </form>
-              )}
-              <div className="mt-4 md:mt-6 text-center">
-                <p className="text-sm md:text-base text-gray-400">
-                  Pas encore de compte ?{' '}
-                  <Link 
-                    to="/register" 
-                    className="text-primary hover:text-secondary transition-colors"
-                  >
-                    Inscrivez-vous
-                  </Link>
-                </p>
-              </div>
-            </InteractiveCard>
-          </motion.div>
-        </div>
-      )}
     </div>
   );
 }
