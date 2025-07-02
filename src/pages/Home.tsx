@@ -80,21 +80,14 @@ export default function Home() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="mb-6 md:mb-8"
+              className="mb-4 md:mb-6"
             >
               <Logo />
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mb-8"
-            >
-              <p className="text-lg text-primary font-cinzel italic text-center">
-                L'astrologie qui éclaire votre quotidien.
-              </p>
-            </motion.div>
+            <p className="text-lg text-primary font-cinzel italic text-center mt-4 mb-6">
+              L'astrologie qui éclaire votre quotidien.
+            </p>
 
             {/* BOUTON PRINCIPAL */}
             <motion.button
@@ -103,7 +96,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
             >
-              <Sparkle className="w-6 h-6 text-yellow-300 animate-spin-slow" />
+              <Sparkle className="w-6 h-6 text-yellow-300" />
               Commencez votre voyage astral
             </motion.button>
 
@@ -116,6 +109,14 @@ export default function Home() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="bg-cosmic-900 rounded-2xl shadow-2xl p-6 md:p-8 xl:p-10 2xl:p-16 max-w-md w-full relative border border-primary/20"
                 >
+                  {/* Bouton retour à l'accueil */}
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="absolute top-3 left-3 text-primary hover:text-secondary text-lg font-bold"
+                  >
+                    ← Accueil
+                  </button>
+                  {/* Croix de fermeture */}
                   <button onClick={() => setShowModal(false)} className="absolute top-3 right-3 text-primary hover:text-secondary text-2xl">×</button>
                   <InteractiveCard className="p-6 md:p-8 xl:p-10 2xl:p-16">
                     <h2 className="text-xl md:text-2xl font-cinzel font-bold text-center mb-4 md:mb-6">
@@ -246,7 +247,7 @@ export default function Home() {
                     <div className="flex flex-col items-center text-center">
                       <motion.div
                         whileHover={{ scale: 1.1, rotate: 360 }}
-                        transition={{ type: "spring", stiffness: 300 }}
+                        transition={{ type: 'spring', stiffness: 300 }}
                         className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 md:mb-4"
                       >
                         <div className="text-primary">{feature.icon}</div>
