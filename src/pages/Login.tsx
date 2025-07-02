@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InteractiveCard from '../components/InteractiveCard';
 import PhoneAuth from '../components/PhoneAuth';
@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase';
 import Logo from '../components/Logo';
 import StarryBackground from '../components/StarryBackground';
 import { cn } from '../lib/utils';
+import { useAuth } from '../lib/hooks/useAuth';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -15,6 +16,13 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { isAuthenticated, profile } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated && !profile) {
+      navigate('/register/complete', { replace: true });
+    }
+  }, [isAuthenticated, profile, navigate]);
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
