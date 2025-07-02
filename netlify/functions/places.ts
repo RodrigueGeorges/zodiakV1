@@ -1,4 +1,5 @@
 import type { Handler, HandlerEvent } from '@netlify/functions';
+import fetch from 'node-fetch';
 
 // Fonction pour construire une réponse standardisée
 const buildResponse = (statusCode: number, body: any, headers: Record<string, string> = {}) => ({
