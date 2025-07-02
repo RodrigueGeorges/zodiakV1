@@ -83,15 +83,14 @@ export default function Home() {
               className="mb-4 md:mb-6"
             >
               <Logo />
+              <p className="text-lg text-white font-cinzel italic text-center mt-4 mb-6 relative z-30">
+                L'astrologie qui éclaire votre quotidien.
+              </p>
             </motion.div>
-
-            <p className="text-lg text-primary font-cinzel italic text-center mt-4 mb-6">
-              L'astrologie qui éclaire votre quotidien.
-            </p>
 
             {/* BOUTON PRINCIPAL */}
             <motion.button
-              className="px-8 py-3 bg-primary text-black rounded-lg font-bold text-lg shadow-lg hover:bg-secondary transition relative flex items-center gap-2 animate-glow mx-auto mb-8"
+              className="px-8 py-3 bg-primary text-black rounded-lg font-bold text-lg shadow-lg hover:bg-secondary transition relative flex items-center gap-2 animate-glow mx-auto mb-8 z-20 no-rotate"
               onClick={() => setShowModal(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
