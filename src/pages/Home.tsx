@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Sparkle, Moon, Sun, Compass, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -12,8 +12,8 @@ import { useAuth } from '../lib/hooks/useAuth';
 import CosmicLoader from '../components/CosmicLoader';
 
 export default function Home() {
+  const { isAuthenticated, isLoading, profile } = useAuth();
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading } = useAuth();
   const [authMode, setAuthMode] = useState<'sms' | 'email'>('email');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,6 +22,12 @@ export default function Home() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && !profile) {
+      navigate('/register/complete', { replace: true });
+    }
+  }, [isLoading, isAuthenticated, profile, navigate]);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +67,7 @@ export default function Home() {
     }
   };
 
-  if (isAuthenticated || isLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-cosmic-900">
         <CosmicLoader />
