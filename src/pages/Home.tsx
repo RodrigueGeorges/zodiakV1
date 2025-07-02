@@ -22,6 +22,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,51 +87,10 @@ export default function Home() {
             </motion.div>
 
             <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="max-w-4xl mx-auto mb-8 md:mb-12"
-            >
-              <div className="relative mb-4 md:mb-6">
-                <h1 className="text-4xl sm:text-5xl md:text-7xl xl:text-8xl 2xl:text-9xl font-bold font-cinzel tracking-wider">
-                  <span className="relative inline-block">
-                    <span className="absolute -inset-2 blur-2xl bg-gradient-to-r from-primary via-secondary to-primary opacity-30" />
-                    <span className="relative bg-gradient-to-r from-primary via-secondary to-primary text-transparent bg-clip-text">
-                      ZODIAK
-                    </span>
-                  </span>
-                </h1>
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="mt-3 md:mt-4"
-                >
-                </motion.div>
-                <div className="mt-6 max-w-2xl mx-auto">
-                  <ul className="space-y-2 text-lg text-gray-100 mb-8 text-left md:text-center">
-                    <li>🔮 <b>Guidance quotidienne</b> : Un message inspirant et personnalisé chaque jour</li>
-                    <li>🪐 <b>Thème natal interactif</b> : Visualisez et comprenez votre carte du ciel</li>
-                    <li>📱 <b>Notifications & SMS</b> : Recevez vos guidances où que vous soyez</li>
-                    <li>🤝 <b>Accompagnement personnalisé</b> : Conseils bien-être adaptés à votre profil astral</li>
-                  </ul>
-                  <div className="flex justify-center">
-                    <button
-                      className="px-8 py-3 bg-primary text-black rounded-lg font-bold text-lg shadow-lg hover:bg-secondary transition"
-                      onClick={() => setIsSignUp(true)}
-                    >
-                      Commencez votre voyage astral
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="mb-4"
+              className="mb-8"
             >
               <p className="text-lg text-primary font-cinzel italic text-center">
                 L'astrologie qui éclaire votre quotidien.
@@ -182,13 +142,15 @@ export default function Home() {
                     </div>
                     {error && <div className="text-red-400 text-sm mb-2">{error}</div>}
                     {info && <div className="text-green-400 text-sm mb-2">{info}</div>}
-                    <button
+                    <motion.button
                       type="submit"
-                      className="w-full py-2 rounded-lg bg-primary text-black font-semibold hover:bg-secondary transition-colors"
+                      className="w-full py-2 rounded-lg bg-primary text-black font-semibold hover:bg-secondary transition-colors relative overflow-hidden"
+                      whileTap={{ scale: 0.97 }}
+                      animate={loading ? { boxShadow: '0 0 24px 8px #F5CBA7' } : {}}
                       disabled={loading}
                     >
                       {loading ? 'Chargement...' : (isSignUp ? 'Créer un compte' : 'Se connecter')}
-                    </button>
+                    </motion.button>
                     <div className="text-center mt-2">
                       {isSignUp ? (
                         <span className="text-sm text-gray-400">Déjà un compte ? <button type="button" className="underline text-primary" onClick={() => setIsSignUp(false)}>Se connecter</button></span>
@@ -257,7 +219,9 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 + 0.5 }}
                 >
-                  <InteractiveCard className="p-4 md:p-6 xl:p-10 2xl:p-14 h-full">
+                  <InteractiveCard
+                    className="p-4 md:p-6 xl:p-10 2xl:p-14 h-full transition-transform duration-300 hover:scale-105 hover:shadow-cosmic hover:border-primary/40 relative group"
+                  >
                     <div className="flex flex-col items-center text-center">
                       <motion.div
                         whileHover={{ scale: 1.1, rotate: 360 }}
@@ -271,6 +235,14 @@ export default function Home() {
                       </h3>
                       <p className="text-sm md:text-base text-gray-300">{feature.description}</p>
                     </div>
+                    <motion.div
+                      className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100"
+                      initial={{ x: 20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Sparkle className="w-5 h-5 text-yellow-300 animate-float" />
+                    </motion.div>
                   </InteractiveCard>
                 </motion.div>
               ))}
@@ -278,6 +250,93 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="bg-cosmic-900 rounded-2xl shadow-2xl p-6 md:p-8 xl:p-10 2xl:p-16 max-w-md w-full relative border border-primary/20"
+          >
+            <button onClick={() => setShowModal(false)} className="absolute top-3 right-3 text-primary hover:text-secondary text-2xl">×</button>
+            <InteractiveCard className="p-6 md:p-8 xl:p-10 2xl:p-16">
+              <h2 className="text-xl md:text-2xl font-cinzel font-bold text-center mb-4 md:mb-6">
+                <span className="bg-gradient-to-r from-primary via-secondary to-primary text-transparent bg-clip-text">
+                  {isSignUp ? 'Inscription' : 'Connexion'}
+                </span>
+              </h2>
+              <div className="flex justify-center mb-4 gap-4">
+                <button
+                  className={cn('px-3 py-1 rounded', authMode === 'sms' ? 'bg-primary text-black' : 'bg-white/10 text-white')}
+                  onClick={() => setAuthMode('sms')}
+                >SMS</button>
+                <button
+                  className={cn('px-3 py-1 rounded', authMode === 'email' ? 'bg-primary text-black' : 'bg-white/10 text-white')}
+                  onClick={() => setAuthMode('email')}
+                >Email</button>
+              </div>
+              {authMode === 'sms' ? (
+                <PhoneAuth onSuccess={() => navigate('/guidance')} />
+              ) : (
+                <form onSubmit={handleEmailAuth} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/50"
+                      placeholder="Votre email"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Mot de passe</label>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/50"
+                      placeholder="Votre mot de passe"
+                      required
+                    />
+                  </div>
+                  {error && <div className="text-red-400 text-sm mb-2">{error}</div>}
+                  {info && <div className="text-green-400 text-sm mb-2">{info}</div>}
+                  <motion.button
+                    type="submit"
+                    className="w-full py-2 rounded-lg bg-primary text-black font-semibold hover:bg-secondary transition-colors relative overflow-hidden"
+                    whileTap={{ scale: 0.97 }}
+                    animate={loading ? { boxShadow: '0 0 24px 8px #F5CBA7' } : {}}
+                    disabled={loading}
+                  >
+                    {loading ? 'Chargement...' : (isSignUp ? 'Créer un compte' : 'Se connecter')}
+                  </motion.button>
+                  <div className="text-center mt-2">
+                    {isSignUp ? (
+                      <span className="text-sm text-gray-400">Déjà un compte ? <button type="button" className="underline text-primary" onClick={() => setIsSignUp(false)}>Se connecter</button></span>
+                    ) : (
+                      <span className="text-sm text-gray-400">Pas encore de compte ? <button type="button" className="underline text-primary" onClick={() => setIsSignUp(true)}>Créer un compte</button></span>
+                    )}
+                  </div>
+                </form>
+              )}
+              <div className="mt-4 md:mt-6 text-center">
+                <p className="text-sm md:text-base text-gray-400">
+                  Pas encore de compte ?{' '}
+                  <Link 
+                    to="/register" 
+                    className="text-primary hover:text-secondary transition-colors"
+                  >
+                    Inscrivez-vous
+                  </Link>
+                </p>
+              </div>
+            </InteractiveCard>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

@@ -11,6 +11,7 @@ import ShareModal from './ShareModal';
 import { cn } from '../lib/utils';
 import type { Json } from '../lib/types/supabase';
 import type { JSX } from 'react';
+import { motion } from 'framer-motion';
 
 const getGuidanceText = (field: Json): string => {
   if (typeof field === 'string') {
@@ -94,7 +95,12 @@ function GuidanceContent(): JSX.Element {
   // Affichage automatique de la guidance du jour si elle existe
   if (guidance) {
     return (
-      <div className="space-y-6">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.97 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+        className="space-y-6"
+      >
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-bold font-cinzel bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">Votre Guidance</h2>
@@ -103,13 +109,15 @@ function GuidanceContent(): JSX.Element {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <button
+            <motion.button
               onClick={handleRefreshGuidance}
-              className="px-3 py-1 text-gray-300 hover:text-primary transition-colors text-sm"
+              className="px-3 py-1 text-gray-300 hover:text-primary transition-colors text-sm relative overflow-hidden"
               title="Actualiser"
+              whileTap={{ scale: 0.95 }}
+              animate={loading ? { boxShadow: '0 0 16px 4px #F5CBA7' } : {}}
             >
               🔄 Actualiser
-            </button>
+            </motion.button>
             <button
               onClick={handleShare}
               className="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-black rounded-lg hover:opacity-90 transition-all duration-200 text-sm font-semibold shadow-lg"
@@ -194,7 +202,7 @@ function GuidanceContent(): JSX.Element {
             userName={(user && (user.profile?.name || user.name)) || 'Utilisateur'}
           />
         )}
-      </div>
+      </motion.div>
     );
   }
 
