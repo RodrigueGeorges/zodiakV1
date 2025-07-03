@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { User, Compass, MessageSquare, Star } from 'lucide-react';
+import { User, Compass, MessageSquare } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useAuth } from '../lib/hooks/useAuth';
 

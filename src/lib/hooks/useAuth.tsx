@@ -27,14 +27,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const refreshProfile = async () => {
     if (session?.user) {
-      const userProfile = await StorageService.getProfile(session.user.id, true);
+      const userProfile = await StorageService.getProfile(session.user.id);
       setProfile(userProfile);
       return userProfile;
     }
     return null;
   };
 
-  const handleAuthStateChange = async (event: string, _session: AuthSession | null) => {
+  const _handleAuthStateChange = async (event: string, _session: AuthSession | null) => {
     if (event === 'SIGNED_IN' && _session?.user) {
       setUser(_session.user);
       setIsAuthenticated(true);
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(null);
       setIsAuthenticated(false);
       setProfile(null);
-      StorageService.clearProfile();
+      StorageService.clearUserCache(_session?.user?.id || '');
     }
     setIsLoading(false);
   };
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log('Auth state changed:', event, session?.user?.id);
       
-      if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESH_FAILED') {
+      if (event === 'SIGNED_OUT') {
         // Token invalide ou expiré
         navigate('/login', { replace: true });
       }

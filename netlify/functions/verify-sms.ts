@@ -1,7 +1,7 @@
 import { Handler } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
+const _supabase = createClient(
   process.env.VITE_SUPABASE_URL!,
   process.env.VITE_SUPABASE_ANON_KEY!
 );

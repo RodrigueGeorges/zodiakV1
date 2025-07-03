@@ -12,7 +12,7 @@ import type { NatalChart } from '../lib/astrology';
 
 export default function RegisterComplete() {
   const navigate = useNavigate();
-  const { user, isLoading, isAuthenticated, refreshProfile, profile } = useAuth();
+  const { user, isLoading, refreshProfile, profile } = useAuth();
   const [form, setForm] = useState({
     name: '',
     phone: '',

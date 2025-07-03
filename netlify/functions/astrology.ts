@@ -56,7 +56,7 @@ function setInCache(key: string, data: NatalChart): void {
   console.log('💾 Cached data for key:', key);
 }
 
-export const handler: Handler = async (event, context) => {
+export const handler: Handler = async (event, _context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -195,7 +195,6 @@ export const handler: Handler = async (event, context) => {
     }
 
     // Check if response is SVG (successful natal chart)
-    const contentType = response.headers.get('content-type');
     const responseText = await response.text();
     
     // If response starts with XML/SVG, it's a successful natal chart
@@ -286,6 +285,6 @@ export const handler: Handler = async (event, context) => {
   }
 };
 
-async function calculateNatalChart(data: { birthDate: string; birthTime: string; birthPlace: string }): Promise<NatalChart> {
+async function _calculateNatalChart(_data: { birthDate: string; birthTime: string; birthPlace: string }): Promise<NatalChart> {
   // ...
 } 

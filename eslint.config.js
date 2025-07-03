@@ -7,13 +7,22 @@ import tsParser from '@typescript-eslint/parser';
 
 export default [
   {
-    ignores: ['dist'],
+    ignores: ['dist', '.netlify'],
   },
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        process: 'readonly',
+        __dirname: 'readonly',
+        require: 'readonly',
+        JSX: 'readonly',
+        RequestInit: 'readonly',
+        PerformanceEntry: 'readonly'
+      },
       parser: tsParser,
     },
     plugins: {
@@ -29,6 +38,13 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error', { 
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_'
+      }],
+      'no-undef': 'off', // TypeScript gère déjà cela
     },
   },
 ];

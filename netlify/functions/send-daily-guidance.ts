@@ -215,9 +215,6 @@ const handler: Handler = async () => {
     // Heure et date locale Europe/Paris
     const nowUtc = new Date();
     const nowParis = toZonedTime(nowUtc, TIMEZONE);
-    const currentHourParis = nowParis.getHours();
-    const currentMinuteParis = nowParis.getMinutes();
-    const todayParis = format(nowParis, 'yyyy-MM-dd', { timeZone: TIMEZONE });
     console.log(`🕗 Heure locale Paris: ${format(nowParis, 'yyyy-MM-dd HH:mm', { timeZone: TIMEZONE })}`);
 
     let sentCount = 0;
@@ -241,7 +238,7 @@ const handler: Handler = async () => {
         const todayParis = format(toZonedTime(new Date(), TIMEZONE), 'yyyy-MM-dd', { timeZone: TIMEZONE });
 
         // Vérifier si la guidance du jour existe déjà
-        const { data: existingGuidance, error: guidanceError } = await supabase
+        const { data: existingGuidance } = await supabase
           .from('daily_guidance')
           .select('*')
           .eq('user_id', profile.id)

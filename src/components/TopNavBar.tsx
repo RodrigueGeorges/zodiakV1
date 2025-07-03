@@ -1,6 +1,6 @@
 import { useAuth } from '../lib/hooks/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { User, Compass, MessageSquare, Star } from 'lucide-react';
+import { User, Compass, MessageSquare } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 function TopNavBar() {

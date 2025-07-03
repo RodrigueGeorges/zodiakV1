@@ -1,7 +1,7 @@
 import { chromium, FullConfig } from '@playwright/test';
 import * as dotenv from 'dotenv';
 
-async function globalSetup(config: FullConfig) {
+async function globalSetup(_config: FullConfig) {
   // Charger les variables d'environnement
   dotenv.config({ path: '.env.local' });
   

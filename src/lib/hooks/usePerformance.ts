@@ -2,8 +2,8 @@ import { useRef, useCallback, useEffect } from 'react';
 
 interface PerformanceMetric {
   name: string;
-  value: number;
-  unit: string;
+  value?: number;
+  unit?: string;
   timestamp: number;
   startTime?: number;
   endTime?: number;
@@ -11,12 +11,12 @@ interface PerformanceMetric {
   metadata?: Record<string, unknown>;
 }
 
-interface PerformanceObserver {
+interface _CustomPerformanceObserver {
   observe: (target: Element) => void;
   disconnect: () => void;
 }
 
-interface PerformanceEntry {
+interface _PerformanceEntry {
   name: string;
   entryType: string;
   startTime: number;
@@ -37,6 +37,7 @@ export function usePerformance(options: UsePerformanceOptions = {}) {
     const startTime = performance.now();
     metricsRef.current.set(name, {
       name,
+      timestamp: Date.now(),
       startTime,
       metadata
     });
@@ -54,7 +55,7 @@ export function usePerformance(options: UsePerformanceOptions = {}) {
     }
 
     const endTime = performance.now();
-    const duration = endTime - metric.startTime;
+    const duration = endTime - (metric.startTime || 0);
     
     metric.endTime = endTime;
     metric.duration = duration;
