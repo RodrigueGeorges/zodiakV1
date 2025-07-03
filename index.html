@@ -18,10 +18,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp" />
     <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin" />
-    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192x192.png" />
-    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512x512.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg?v=2" />
+    <link rel="manifest" href="/manifest.json?v=2" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192x192.png?v=2" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512x512.png?v=2" />
     <meta name="apple-mobile-web-app-title" content="Zodiak" />
     <meta name="application-name" content="Zodiak" />
     <meta name="theme-color" content="#F5CBA7" />
@@ -68,5 +68,15 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Désactive tous les service workers pour éviter le cache persistant
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) {
+            registration.unregister();
+          }
+        });
+      }
+    </script>
   </body>
 </html>
