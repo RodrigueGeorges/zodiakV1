@@ -36,7 +36,7 @@
   Content-Type: image/jpeg
   Cache-Control: public, max-age=31536000, immutable
 
-*.json
+/*.json
   Content-Type: application/json
   Cache-Control: public, max-age=31536000, immutable
 
