@@ -1,3 +1,13 @@
+[[redirects]]
+  from = "/assets/*"
+  to = "/assets/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/assets/*.mjs"
+  to = "/assets/:splat"
+  status = 200
+
 [build]
   command = "npm run build:prod"
   publish = "dist"
