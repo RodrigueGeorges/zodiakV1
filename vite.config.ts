@@ -27,8 +27,8 @@ export default defineConfig({
           'utils': ['luxon', 'clsx', 'tailwind-merge']
         },
         format: 'es',
-        entryFileNames: '[name].[hash].mjs',
-        chunkFileNames: '[name].[hash].mjs',
+        entryFileNames: '[name].[hash].js',
+        chunkFileNames: '[name].[hash].js',
         assetFileNames: 'assets/[name].[hash][extname]'
       }
     },
