@@ -53,6 +53,17 @@
         flex-direction: column;
       }
     </style>
+    <script>
+      // Reload automatique si un JS échoue à charger (cache busting)
+      window.addEventListener('error', function(e) {
+        if (e.target.tagName === 'SCRIPT' && e.target.src && e.target.src.match(/\.js$/)) {
+          if (!window.__RELOADED_ONCE__) {
+            window.__RELOADED_ONCE__ = true;
+            window.location.reload(true);
+          }
+        }
+      }, true);
+    </script>
   </head>
   <body>
     <div id="root"></div>
